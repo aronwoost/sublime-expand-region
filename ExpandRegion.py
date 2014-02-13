@@ -44,17 +44,16 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
   def expand_to_quotes(self, string, startIndex, endIndex):
     quotesRe = re.compile(r'([\'"])(?:\1|.*?[^\\]\1)')
 
-    result = quotesRe.search(string)
+    for match in re.finditer(quotesRe, string):
+      start = match.start()
+      end = match.end()
 
-    if result is None:
-      return None
+      if end < startIndex:
+        continue
 
-    start = result.start()
-    end = result.end()
-
-    if(startIndex >= start + 1 and endIndex <= end - 1):
-
-      if(startIndex == start +1 and endIndex == end - 1):
-        self.view.sel().add(sublime.Region(start, end))
-      else:
-        self.view.sel().add(sublime.Region(start + 1, end - 1))
+      if(startIndex >= start + 1 and endIndex <= end - 1):
+        if(startIndex == start +1 and endIndex == end - 1):
+          self.view.sel().add(sublime.Region(start, end))
+        else:
+          self.view.sel().add(sublime.Region(start + 1, end - 1))
+        break
