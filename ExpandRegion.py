@@ -9,7 +9,8 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
 
     if self.expand_to_word(string, start, end) is None:
       if self.expand_to_quotes(string, start, end) is None:
-        print 'none'
+        if self.expand_to_symbols(string, start, end) is None:
+          print 'none'
   
   def expand_to_word(self, string, startIndex, endIndex):
     wordRe = re.compile("^[a-zA-Z0-9_]*$");
@@ -57,3 +58,58 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
         else:
           self.view.sel().add(sublime.Region(start + 1, end - 1))
         break
+
+  def expand_to_symbols(self, string, startIndex, endIndex):
+    quotesRe = re.compile(r'([\(\[\{])')
+
+    search = True;
+    searchIndex = startIndex - 1;
+    while search:
+      char = string[searchIndex:searchIndex+1]
+      result = quotesRe.match(char)
+      if result:
+        symbolToFind = result.group()
+        newStartIndex = searchIndex + 1
+        search = False
+      else:
+        searchIndex -= 1
+
+    counterparts = {
+      "(":")",
+      "{":"}",
+      "[":"]",
+      ")":"(",
+      "}":"{",
+      "]":"["
+    }
+
+    symbolPairRe = re.compile(r'(['+re.escape(symbolToFind)+re.escape(counterparts[symbolToFind])+'])')
+
+    symbolStack = [symbolToFind]
+
+    search = True;
+    searchIndex = endIndex;
+    while search:
+      char = string[searchIndex:searchIndex+1]
+      result = symbolPairRe.match(char)
+      if result:
+        symbol = result.group()
+
+        if symbolStack[len(symbolStack) - 1] == counterparts[symbol]:
+          symbolStack.pop()
+        else:
+          symbolStack.append(symbol)
+
+        if len(symbolStack) == 0:
+          newEndIndex = searchIndex;
+          break
+
+      if searchIndex == len(string):
+        search = False
+
+      searchIndex += 1
+
+    if(startIndex == newStartIndex and endIndex == newEndIndex):
+      self.view.sel().add(sublime.Region(newStartIndex - 1, newEndIndex + 1))
+    else:
+      self.view.sel().add(sublime.Region(newStartIndex, newEndIndex))
