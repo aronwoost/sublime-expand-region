@@ -17,6 +17,12 @@ def expand(string, start, end):
 
 def expand_to_word(string, startIndex, endIndex):
   wordRe = re.compile("^[a-zA-Z0-9_]*$");
+  wordRe2 = re.compile("[a-zA-Z0-9_]*$");
+
+  if(startIndex != endIndex):
+    selection = string[startIndex:endIndex]
+    if wordRe2.match(selection) is None:
+      return None
 
   search = True;
   searchIndex = startIndex - 1;

@@ -7,12 +7,17 @@ class WordTest(unittest.TestCase):
       self.string1 = myfile.read()
     with open ("test/word_02.txt", "r") as myfile:
       self.string2 = myfile.read()
+    with open ("test/word_03.txt", "r") as myfile:
+      self.string3 = myfile.read()
 
   def test_word_with_whitespaces_around (self):
     self.assertEqual(expand_region_handler.expand_to_word(self.string1, 3, 3), {"start": 1, "end": 6, "string": "hello", "type": "word"})
 
   def test_dont_find_word (self):
     self.assertEqual(expand_region_handler.expand_to_word(self.string2, 1, 10), None)
+
+  def test_dont_find_word2 (self):
+    self.assertEqual(expand_region_handler.expand_to_word(self.string3, 2, 5), None)
 
 class QuoteTest(unittest.TestCase):
   def setUp(self):
