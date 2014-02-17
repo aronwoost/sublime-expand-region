@@ -45,6 +45,8 @@ class SymbolTest(unittest.TestCase):
   def setUp(self):
     with open ("test/symbol_01.txt", "r") as myfile:
       self.string1 = myfile.read()
+    with open ("test/symbol_02.txt", "r") as myfile:
+      self.string2 = myfile.read()
 
   def test_symbol_inner (self):
     self.assertEqual(expand_region_handler.expand_to_symbols(self.string1, 7, 10), {"start": 1, "end": 10, "string": "foo - bar", "type": "symbol"})
@@ -59,6 +61,9 @@ class SymbolTest(unittest.TestCase):
   def test_look_ahead_dont_hang (self):
     testString = "(   "
     self.assertEqual(expand_region_handler.expand(testString, 2, 2), None)
+
+  def test_fix_look_back (self):
+    self.assertEqual(expand_region_handler.expand(self.string2, 32, 32), {"start": 12, "end": 35, "string": "foo.indexOf('bar') > -1", "type": "symbol"})
 
 class IntegrationTest(unittest.TestCase):
   def setUp(self):

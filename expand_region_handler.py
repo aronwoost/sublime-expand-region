@@ -81,21 +81,9 @@ def expand_to_quotes(string, startIndex, endIndex):
         return create_return_obj(start + 1, end - 1, string, "quotes")
 
 def expand_to_symbols(string, startIndex, endIndex):
-  quotesRe = re.compile(r'([\(\[\{])')
-
-  search = True;
-  searchIndex = startIndex - 1;
-  while search:
-    if(searchIndex < 0):
-      return None
-    char = string[searchIndex:searchIndex+1]
-    result = quotesRe.match(char)
-    if result:
-      symbolToFind = result.group()
-      newStartIndex = searchIndex + 1
-      search = False
-    else:
-      searchIndex -= 1
+  openingSymbols = "([{";
+  closingSymbols = ")]}";
+  quotesRe = re.compile(r'(['+re.escape(openingSymbols + closingSymbols)+'])')
 
   counterparts = {
     "(":")",
@@ -105,6 +93,31 @@ def expand_to_symbols(string, startIndex, endIndex):
     "}":"{",
     "]":"["
   }
+
+  symbolStack = []
+
+  search = True;
+  searchIndex = startIndex - 1;
+  while search:
+    if(searchIndex < 0):
+      return None
+    char = string[searchIndex:searchIndex+1]
+    result = quotesRe.match(char)
+    if result:
+      symbol = result.group()
+      if(symbol in openingSymbols and len(symbolStack) == 0):
+        symbolToFind = symbol
+        newStartIndex = searchIndex + 1
+        search = False
+      else:
+        if len(symbolStack) > 0 and symbolStack[len(symbolStack) - 1] == counterparts[symbol]:
+          symbolStack.pop()
+        else:
+          symbolStack.append(symbol)
+      searchIndex -= 1
+    else:
+      searchIndex -= 1
+
 
   symbolPairRe = re.compile(r'(['+re.escape(symbolToFind)+re.escape(counterparts[symbolToFind])+'])')
 
