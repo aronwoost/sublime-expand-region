@@ -24,29 +24,25 @@ def expand_to_word(string, startIndex, endIndex):
     if wordRe2.match(selection) is None:
       return None
 
-  search = True;
   searchIndex = startIndex - 1;
-  while search:
+  while True:
     if searchIndex < 0:
-      search = False
       break
     char = string[searchIndex:searchIndex+1]
     if wordRe.match(char) is None:
       newStartIndex = searchIndex + 1
-      search = False
+      break
     else:
       searchIndex -= 1
 
-  search = True;
   searchIndex = endIndex;
-  while search:
+  while True:
     if searchIndex > len(string) - 1:
-      search = False
       break
     char = string[searchIndex:searchIndex+1]
     if wordRe.match(char) is None:
       newEndIndex = searchIndex
-      search = False
+      break
     else:
       searchIndex += 1
 
@@ -96,9 +92,8 @@ def expand_to_symbols(string, startIndex, endIndex):
 
   symbolStack = []
 
-  search = True;
   searchIndex = startIndex - 1;
-  while search:
+  while True:
     if(searchIndex < 0):
       return None
     char = string[searchIndex:searchIndex+1]
@@ -108,7 +103,7 @@ def expand_to_symbols(string, startIndex, endIndex):
       if(symbol in openingSymbols and len(symbolStack) == 0):
         symbolToFind = symbol
         newStartIndex = searchIndex + 1
-        search = False
+        break
       else:
         if len(symbolStack) > 0 and symbolStack[len(symbolStack) - 1] == counterparts[symbol]:
           symbolStack.pop()
@@ -123,9 +118,8 @@ def expand_to_symbols(string, startIndex, endIndex):
 
   symbolStack = [symbolToFind]
 
-  search = True;
   searchIndex = endIndex;
-  while search:
+  while True:
     char = string[searchIndex:searchIndex+1]
     result = symbolPairRe.match(char)
     if result:
@@ -141,7 +135,7 @@ def expand_to_symbols(string, startIndex, endIndex):
         break
 
     if searchIndex == len(string):
-      search = False
+      break
 
     searchIndex += 1
 
