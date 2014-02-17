@@ -101,7 +101,6 @@ def expand_to_symbols(string, startIndex, endIndex):
     if result:
       symbol = result.group()
       if(symbol in openingSymbols and len(symbolStack) == 0):
-        symbolToFind = symbol
         newStartIndex = searchIndex + 1
         break
       else:
@@ -109,14 +108,12 @@ def expand_to_symbols(string, startIndex, endIndex):
           symbolStack.pop()
         else:
           symbolStack.append(symbol)
-      searchIndex -= 1
-    else:
-      searchIndex -= 1
+    searchIndex -= 1
 
 
-  symbolPairRe = re.compile(r'(['+re.escape(symbolToFind + counterparts[symbolToFind])+'])')
+  symbolPairRe = re.compile(r'(['+re.escape(symbol + counterparts[symbol])+'])')
 
-  symbolStack = [symbolToFind]
+  symbolStack = [symbol]
 
   searchIndex = endIndex;
   while True:
