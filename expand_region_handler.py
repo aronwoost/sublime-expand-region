@@ -86,6 +86,8 @@ def expand_to_symbols(string, startIndex, endIndex):
   search = True;
   searchIndex = startIndex - 1;
   while search:
+    if(searchIndex < 0):
+      return None
     char = string[searchIndex:searchIndex+1]
     result = quotesRe.match(char)
     if result:
@@ -130,10 +132,13 @@ def expand_to_symbols(string, startIndex, endIndex):
 
     searchIndex += 1
 
-  if(startIndex == newStartIndex and endIndex == newEndIndex):
-    return create_return_obj(newStartIndex - 1, newEndIndex + 1, string, "symbol")
-  else:
-    return create_return_obj(newStartIndex, newEndIndex, string, "symbol")
+  try:
+    if(startIndex == newStartIndex and endIndex == newEndIndex):
+      return create_return_obj(newStartIndex - 1, newEndIndex + 1, string, "symbol")
+    else:
+      return create_return_obj(newStartIndex, newEndIndex, string, "symbol")
+  except NameError:
+    return None
 
 def create_return_obj(start, end, string, type):
   return {"start": start, "end": end, "string": string[start:end], "type": type}

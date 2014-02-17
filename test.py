@@ -52,6 +52,14 @@ class SymbolTest(unittest.TestCase):
   def test_symbol_outer (self):
     self.assertEqual(expand_region_handler.expand_to_symbols(self.string1, 1, 10), {"start": 0, "end": 11, "string": "(foo - bar)", "type": "symbol"})
 
+  def test_look_back_dont_hang (self):
+    testString = "   "
+    self.assertEqual(expand_region_handler.expand(testString, 1, 2), None)
+
+  def test_look_ahead_dont_hang (self):
+    testString = "(   "
+    self.assertEqual(expand_region_handler.expand(testString, 2, 2), None)
+
 class IntegrationTest(unittest.TestCase):
   def setUp(self):
     with open ("test/integration_01.txt", "r") as myfile:
