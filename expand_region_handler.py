@@ -83,7 +83,7 @@ def expand_to_quotes(string, startIndex, endIndex):
 def expand_to_symbols(string, startIndex, endIndex):
   openingSymbols = "([{";
   closingSymbols = ")]}";
-  quotesRe = re.compile(r'(['+re.escape(openingSymbols + closingSymbols)+'])')
+  symbolsRe = re.compile(r'(['+re.escape(openingSymbols + closingSymbols)+'])')
 
   counterparts = {
     "(":")",
@@ -102,7 +102,7 @@ def expand_to_symbols(string, startIndex, endIndex):
     if(searchIndex < 0):
       return None
     char = string[searchIndex:searchIndex+1]
-    result = quotesRe.match(char)
+    result = symbolsRe.match(char)
     if result:
       symbol = result.group()
       if(symbol in openingSymbols and len(symbolStack) == 0):
@@ -119,7 +119,7 @@ def expand_to_symbols(string, startIndex, endIndex):
       searchIndex -= 1
 
 
-  symbolPairRe = re.compile(r'(['+re.escape(symbolToFind)+re.escape(counterparts[symbolToFind])+'])')
+  symbolPairRe = re.compile(r'(['+re.escape(symbolToFind + counterparts[symbolToFind])+'])')
 
   symbolStack = [symbolToFind]
 
