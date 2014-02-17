@@ -27,6 +27,9 @@ def expand_to_word(string, startIndex, endIndex):
   search = True;
   searchIndex = startIndex - 1;
   while search:
+    if searchIndex < 0:
+      search = False
+      break
     char = string[searchIndex:searchIndex+1]
     if wordRe.match(char) is None:
       newStartIndex = searchIndex + 1
@@ -37,6 +40,9 @@ def expand_to_word(string, startIndex, endIndex):
   search = True;
   searchIndex = endIndex;
   while search:
+    if searchIndex > len(string) - 1:
+      search = False
+      break
     char = string[searchIndex:searchIndex+1]
     if wordRe.match(char) is None:
       newEndIndex = searchIndex
@@ -44,10 +50,13 @@ def expand_to_word(string, startIndex, endIndex):
     else:
       searchIndex += 1
 
-  if startIndex == newStartIndex and endIndex == newEndIndex:
+  try:
+    if startIndex == newStartIndex and endIndex == newEndIndex:
+      return None
+    else:
+      return create_return_obj(newStartIndex, newEndIndex, string, "word")
+  except NameError:
     return None
-  else:
-    return create_return_obj(newStartIndex, newEndIndex, string, "word")
 
 def expand_to_quotes(string, startIndex, endIndex):
   quotesRe = re.compile(r'([\'"])(?:\1|.*?[^\\]\1)')

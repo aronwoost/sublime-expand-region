@@ -19,6 +19,9 @@ class WordTest(unittest.TestCase):
   def test_dont_find_word2 (self):
     self.assertEqual(expand_region_handler.expand_to_word(self.string3, 2, 5), None)
 
+  def test_dont_find_word3_and_dont_hang (self):
+    self.assertEqual(expand_region_handler.expand_to_word("aaa", 0, 3), None)
+
 class QuoteTest(unittest.TestCase):
   def setUp(self):
     with open ("test/quote_01.txt", "r") as myfile:
