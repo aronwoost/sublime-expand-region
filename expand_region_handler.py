@@ -3,11 +3,15 @@ import re
 def expand(string, start, end):
   result = expand_to_word(string, start, end)
   if result is None:
-    result = expand_to_quotes(string, start, end)
+    result = expand_to_word_with_dots(string, start, end)
     if result is None:
-      result = expand_to_symbols(string, start, end)
+      result = expand_to_quotes(string, start, end)
       if result is None:
-        print None
+        result = expand_to_symbols(string, start, end)
+        if result is None:
+          print None
+        else:
+          return result
       else:
         return result
     else:
@@ -16,20 +20,30 @@ def expand(string, start, end):
     return result
 
 def expand_to_word(string, startIndex, endIndex):
-  wordRe = re.compile("^[a-zA-Z0-9_]*$");
-  wordRe2 = re.compile("[a-zA-Z0-9_]*$");
+  negativeWordRe = re.compile("^[a-zA-Z0-9_]*$");
+  positiveWordRe = re.compile("[a-zA-Z0-9_]*$");
 
+  return _expand_to_regex_rule(string, startIndex, endIndex, negativeWordRe, positiveWordRe, "word")
+
+def expand_to_word_with_dots(string, startIndex, endIndex):
+  negativeWordWithDots = re.compile("^[a-zA-Z0-9_.]*$");
+  positiveWordWithDots = re.compile("[a-zA-Z0-9_.]*$");
+
+  return _expand_to_regex_rule(string, startIndex, endIndex, negativeWordWithDots, positiveWordWithDots, "word_with_dots")
+
+def _expand_to_regex_rule(string, startIndex, endIndex, negativeRe, positiveRe, type):
   if(startIndex != endIndex):
     selection = string[startIndex:endIndex]
-    if wordRe2.match(selection) is None:
+    if positiveRe.match(selection) is None:
       return None
 
   searchIndex = startIndex - 1;
   while True:
     if searchIndex < 0:
+      newStartIndex = searchIndex + 1
       break
     char = string[searchIndex:searchIndex+1]
-    if wordRe.match(char) is None:
+    if negativeRe.match(char) is None:
       newStartIndex = searchIndex + 1
       break
     else:
@@ -38,9 +52,10 @@ def expand_to_word(string, startIndex, endIndex):
   searchIndex = endIndex;
   while True:
     if searchIndex > len(string) - 1:
+      newEndIndex = searchIndex
       break
     char = string[searchIndex:searchIndex+1]
-    if wordRe.match(char) is None:
+    if negativeRe.match(char) is None:
       newEndIndex = searchIndex
       break
     else:
@@ -50,7 +65,7 @@ def expand_to_word(string, startIndex, endIndex):
     if startIndex == newStartIndex and endIndex == newEndIndex:
       return None
     else:
-      return create_return_obj(newStartIndex, newEndIndex, string, "word")
+      return create_return_obj(newStartIndex, newEndIndex, string, type)
   except NameError:
     return None
 

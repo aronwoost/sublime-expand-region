@@ -5,22 +5,28 @@ class WordTest(unittest.TestCase):
   def setUp(self):
     with open ("test/word_01.txt", "r") as myfile:
       self.string1 = myfile.read()
-    with open ("test/word_02.txt", "r") as myfile:
-      self.string2 = myfile.read()
-    with open ("test/word_03.txt", "r") as myfile:
-      self.string3 = myfile.read()
 
   def test_word_with_whitespaces_around (self):
-    self.assertEqual(expand_region_handler.expand_to_word(self.string1, 3, 3), {"start": 1, "end": 6, "string": "hello", "type": "word"})
+    self.assertEqual(expand_region_handler.expand_to_word(" hello ", 3, 3), {"start": 1, "end": 6, "string": "hello", "type": "word"})
 
   def test_dont_find_word (self):
-    self.assertEqual(expand_region_handler.expand_to_word(self.string2, 1, 10), None)
+    self.assertEqual(expand_region_handler.expand_to_word(self.string1, 1, 10), None)
 
   def test_dont_find_word2 (self):
-    self.assertEqual(expand_region_handler.expand_to_word(self.string3, 2, 5), None)
+    self.assertEqual(expand_region_handler.expand_to_word(" ee ee ", 2, 5), None)
+
+  def test_string_is_only_word (self):
+    self.assertEqual(expand_region_handler.expand_to_word("bar", 1, 1), {"start": 0, "end": 3, "string": "bar", "type": "word"})
+
+  def test_dont_find_word3 (self):
+    self.assertEqual(expand_region_handler.expand_to_word("foo.bar", 5, 5), {"start": 4, "end": 7, "string": "bar", "type": "word"})
 
   def test_dont_find_word3_and_dont_hang (self):
     self.assertEqual(expand_region_handler.expand_to_word("aaa", 0, 3), None)
+
+class WordWithDotsTest(unittest.TestCase):
+  def test (self):
+    self.assertEqual(expand_region_handler.expand_to_word_with_dots("foo.bar", 6, 7), {"start": 0, "end": 7, "string": "foo.bar", "type": "word_with_dots"})
 
 class QuoteTest(unittest.TestCase):
   def setUp(self):
