@@ -2,22 +2,22 @@ import re
 
 def expand(string, start, end):
   result = expand_to_word(string, start, end)
-  if result is None:
-    result = expand_to_word_with_dots(string, start, end)
-    if result is None:
-      result = expand_to_quotes(string, start, end)
-      if result is None:
-        result = expand_to_symbols(string, start, end)
-        if result is None:
-          print None
-        else:
-          return result
-      else:
-        return result
-    else:
-      return result
-  else:
+  if result:
     return result
+
+  result = expand_to_word_with_dots(string, start, end)
+  if result:
+    return result
+
+  result = expand_to_quotes(string, start, end)
+  if result:
+    return result
+
+  result = expand_to_symbols(string, start, end)
+  if result:
+    return result
+
+  print None
 
 def expand_to_word(string, startIndex, endIndex):
   negativeWordRe = re.compile("^[a-zA-Z0-9_]*$");
