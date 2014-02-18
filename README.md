@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/aronwoost/sublime-expand-region.png?branch=master)](https://travis-ci.org/aronwoost/sublime-expand-region)
+
 # Work in progress - DON'T USE
 
 Lets build something like that:  
