@@ -75,6 +75,8 @@ class IntegrationTest(unittest.TestCase):
   def setUp(self):
     with open ("test/integration_01.txt", "r") as myfile:
       self.string1 = myfile.read()
+    with open ("test/integration_02.txt", "r") as myfile:
+      self.string2 = myfile.read()
 
   def test_word (self):
     self.assertEqual(expand_region_handler.expand(self.string1, 7, 7), {"start": 6, "end": 9, "string": "bar", "type": "word"})
@@ -87,6 +89,9 @@ class IntegrationTest(unittest.TestCase):
 
   def test_symbol_inner (self):
     self.assertEqual(expand_region_handler.expand(self.string1, 1, 10), {"start": 1, "end": 16, "string": "\"foo bar\" + \"x\"", "type": "symbol"})
+
+  def test_dont_expand_to_dots (self):
+    self.assertEqual(expand_region_handler.expand(self.string2, 2, 5), {"start": 1, "end": 10, "string": " foo.bar ", "type": "quotes"})
 
 # def suite():
   # unittest.makeSuite(WordTest, "test")

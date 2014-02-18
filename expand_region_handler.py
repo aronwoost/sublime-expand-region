@@ -5,11 +5,11 @@ def expand(string, start, end):
   if result:
     return result
 
-  result = expand_to_word_with_dots(string, start, end)
+  result = expand_to_quotes(string, start, end)
   if result:
     return result
 
-  result = expand_to_quotes(string, start, end)
+  result = expand_to_word_with_dots(string, start, end)
   if result:
     return result
 
