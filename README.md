@@ -1,11 +1,55 @@
 [![Build Status](https://travis-ci.org/aronwoost/sublime-expand-region.png?branch=master)](https://travis-ci.org/aronwoost/sublime-expand-region)
 
-# Work in progress - DON'T USE
+# ExpandRegion for Sublime Text
 
-Lets build something like that:  
+Faster text selection!
+
+## Installing
+
+### Package Control isn't working yet. Please clone.
+
+**With the Package Control plugin:** The easiest way to install ExpandRegion is through Package Control, which can be found at this site: [http://wbond.net/sublime_packages/package_control](http://wbond.net/sublime_packages/package_control)
+
+Once you install Package Control, restart ST and bring up the Command Palette (`Command+Shift+P` on OS X, `Control+Shift+P` on Linux/Windows). Select "Package Control: Install Package", wait while Package Control fetches the latest package list, then select ExpandRegion when the list appears. The advantage of using this method is that Package Control will automatically keep SublimeLinter up to date with the latest version.
+
+**Without Git:** Download the latest source from [GitHub](https://github.com/aronwoost/sublime-expand-region) and copy the SublimeLinter folder to your Sublime Text "Packages" directory.
+
+**With Git:** Clone the repository in your Sublime Text "Packages" directory:
+
+    git clone https://github.com/aronwoost/sublime-expand-region.git
+
+
+The "Packages" directory is located at:
+
+* OS X:
+
+        ~/Library/Application Support/Sublime Text 2/Packages/
+
+* Linux:
+
+        ~/.config/sublime-text-2/Packages/
+
+* Windows:
+
+        %APPDATA%/Sublime Text 2/Packages/
+
+## Using
+
+By default **no shortcut is set**. I recommend using the shortcut for the build in "Expand Selection to Scope". Open "Key Bindings - User" and add to following line:
+```
+{ "keys": ["super+shift+space"], "command": "expand_region" }
+```
+
+## Develop
+
+## Background
+
+This plugin is inspired by the amazing [expand-region for Emacs](https://github.com/magnars/expand-region.el).
+
+Here a video showing this feature:  
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=_RvHz3vJ3kA
 " target="_blank"><img src="http://img.youtube.com/vi/_RvHz3vJ3kA/0.jpg" 
 alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 
-[Emacs expand-region](https://github.com/magnars/expand-region.el)  
+Read more:  
 [Extend Selection by Semantic Unit](http://ergoemacs.org/emacs/syntax_tree_walk.html)
