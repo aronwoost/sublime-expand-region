@@ -2,7 +2,9 @@
 
 # ExpandRegion for Sublime Text
 
-Faster text selection!
+Like "Expand Selection to Scope". But better!
+
+Video comming soon.
 
 ## Installing
 
