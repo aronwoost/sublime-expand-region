@@ -1,0 +1,17 @@
+
+
+
+Hi! And welcome to ExpandRegion for Sublime Text.
+
+
+In order to make this plugin work you need to set a shortcut. 
+
+By default no shortcut is set!
+
+I recommend using the shortcut for the build in "Expand Selection to Scope".
+Open "Preferences" -> "Key Bindings - User" and add to following line:
+
+{ "keys": ["super+shift+space"], "command": "expand_region" }
+
+
+More info: https://github.com/aronwoost/sublime-expand-region
