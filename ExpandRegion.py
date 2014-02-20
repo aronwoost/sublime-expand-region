@@ -1,7 +1,12 @@
-import sublime, sublime_plugin, expand_region_handler
+import sublime, sublime_plugin
+
+try:
+  import expand_region_handler
+except:
+  from . import expand_region_handler
 
 class ExpandRegionCommand(sublime_plugin.TextCommand):
-  def run(self, edit, debug):
+  def run(self, edit, debug=False):
     region = self.view.sel()[0]
     string = self.view.substr(sublime.Region(0, self.view.size()))
     start = region.begin()
@@ -11,4 +16,4 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
     if result:
       self.view.sel().add(sublime.Region(result["start"], result["end"]))
       if debug:
-        print "startIndex: {0}, endIndex: {1}, type: {2}".format(result["start"], result["end"], result["type"])
+        print("startIndex: {0}, endIndex: {1}, type: {2}".format(result["start"], result["end"], result["type"]))

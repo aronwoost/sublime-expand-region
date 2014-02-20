@@ -17,7 +17,7 @@ def expand(string, start, end):
   if result:
     return result
 
-  print None
+  print(None)
 
 def expand_to_word(string, startIndex, endIndex):
   negativeWordRe = re.compile("^[a-zA-Z0-9_]*$");
