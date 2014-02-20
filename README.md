@@ -46,10 +46,9 @@ By default **no shortcut is set**. I recommend using the shortcut for the build 
 
 This plugin is inspired by the amazing [expand-region for Emacs](https://github.com/magnars/expand-region.el).
 
-Here a video showing this feature:  
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=_RvHz3vJ3kA
-" target="_blank"><img src="http://img.youtube.com/vi/_RvHz3vJ3kA/0.jpg" 
-alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
+Here a video showing this feature (in Emacs):  
+
+[![](http://img.youtube.com/vi/_RvHz3vJ3kA/0.jpg)](http://www.youtube.com/watch?feature=player_embedded&v=M)
 
 Read more:  
 [Extend Selection by Semantic Unit](http://ergoemacs.org/emacs/syntax_tree_walk.html)
