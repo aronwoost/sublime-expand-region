@@ -54,3 +54,7 @@ Here a video showing this feature (in Emacs):
 
 Read more:  
 [Extend Selection by Semantic Unit](http://ergoemacs.org/emacs/syntax_tree_walk.html)
+
+## License
+
+MIT
