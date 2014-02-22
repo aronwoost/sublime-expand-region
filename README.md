@@ -4,7 +4,7 @@
 
 ### Like "Expand Selection to Scope". But better!
 
-ExpandRegion works a bit like the build in "Expand Selection to Scope", however it does not depend on Scopes (Scopes are used by ST to "understand" code, i.e. for syntax highlighting). Therefore selection expantion can be more granular and customizable.
+ExpandRegion works a bit like the build in "Expand Selection to Scope", however it does not depend on Scopes (Scopes are used by ST to "understand" code, i.e. for syntax highlighting). Therefore selection expansion can be more granular and customizable.
 
 Video comming soon.
 
