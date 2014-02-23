@@ -69,6 +69,47 @@ def _expand_to_regex_rule(string, startIndex, endIndex, negativeRe, positiveRe, 
   except NameError:
     return None
 
+def expand_to_line(string, startIndex, endIndex):
+  linebreakRe = re.compile(r'\n')
+
+  spacesAndTabsRe = re.compile(r'([ \t]+)')
+
+  searchIndex = startIndex - 1;
+  while True:
+    if searchIndex < 0:
+      newStartIndex = searchIndex + 1
+      break
+    char = string[searchIndex:searchIndex+1]
+    if linebreakRe.match(char):
+      newStartIndex = searchIndex + 1
+      break
+    else:
+      searchIndex -= 1
+
+  searchIndex = endIndex;
+  while True:
+    if searchIndex > len(string) - 1:
+      newEndIndex = searchIndex
+      break
+    char = string[searchIndex:searchIndex+1]
+    if linebreakRe.match(char):
+      newEndIndex = searchIndex
+      break
+    else:
+      searchIndex += 1
+
+  try:
+    if startIndex == newStartIndex and endIndex == newEndIndex:
+      return None
+    else:
+      s = string[newStartIndex:newEndIndex]
+      r = spacesAndTabsRe.match(s)
+      if r:
+        newStartIndex = newStartIndex + r.end();
+      return create_return_obj(newStartIndex, newEndIndex, string, "line")
+  except NameError:
+    return None
+
 def expand_to_quotes(string, startIndex, endIndex):
   quotesRe = re.compile(r'([\'"])(?:\1|.*?[^\\]\1)')
 

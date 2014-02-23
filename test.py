@@ -43,6 +43,25 @@ class WordWithDotsTest(unittest.TestCase):
     self.assertEqual(result["end"], 7)
     self.assertEqual(result["string"], "foo.bar")
 
+class LineTest(unittest.TestCase):
+  def setUp(self):
+    with open ("test/line_01.txt", "r") as myfile:
+      self.string1 = myfile.read()
+    with open ("test/line_02.txt", "r") as myfile:
+      self.string2 = myfile.read()
+
+  def test_with_spaces_at_beginning (self):
+    result = expand_region_handler.expand_to_line(self.string1, 10, 16);
+    self.assertEqual(result["string"], "is it me")
+    self.assertEqual(result["start"], 10)
+    self.assertEqual(result["end"], 18)
+
+  def test_with_no_spaces_or_tabs_at_beginning (self):
+    result = expand_region_handler.expand_to_line(self.string2, 6, 12);
+    self.assertEqual(result["string"], "is it me")
+    self.assertEqual(result["start"], 6)
+    self.assertEqual(result["end"], 14)
+
 class QuoteTest(unittest.TestCase):
   def setUp(self):
     with open ("test/quote_01.txt", "r") as myfile:
