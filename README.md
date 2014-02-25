@@ -50,7 +50,7 @@ This plugin is inspired by the amazing [expand-region for Emacs](https://github.
 
 Here a video showing this feature (in Emacs):  
 
-[![](http://img.youtube.com/vi/_RvHz3vJ3kA/0.jpg)](http://www.youtube.com/watch?feature=player_embedded&v=M)
+[![](http://img.youtube.com/vi/_RvHz3vJ3kA/0.jpg)](http://www.youtube.com/watch?v=_RvHz3vJ3kA?feature=player_embedded&v=M)
 
 Read more:  
 [Extend Selection by Semantic Unit](http://ergoemacs.org/emacs/syntax_tree_walk.html)
