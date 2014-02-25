@@ -31,6 +31,16 @@ def expand(string, start, end):
 
   print(None)
 
+def selection_contain_linebreaks(string, startIndex, endIndex):
+  linebreakRe = re.compile("(\n)")
+  part = string[startIndex:endIndex]
+
+  result = linebreakRe.search(part)
+  if result:
+    return True
+  else:
+    return False
+
 def expand_to_word(string, startIndex, endIndex):
   negativeWordRe = re.compile("^[a-zA-Z0-9_$]*$");
   positiveWordRe = re.compile("[a-zA-Z0-9_$]*$");

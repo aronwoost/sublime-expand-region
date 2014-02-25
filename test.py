@@ -1,6 +1,17 @@
 import unittest
 import expand_region_handler
 
+class LinebreaksTest(unittest.TestCase):
+  def setUp(self):
+    with open ("test/linebreak_01.txt", "r") as myfile:
+      self.string1 = myfile.read()
+
+  def test_find_linebreak (self):
+    self.assertTrue(expand_region_handler.selection_contain_linebreaks(self.string1, 0, 8))
+
+  def test_dont_find_linebreak (self):
+    self.assertFalse(expand_region_handler.selection_contain_linebreaks("aaa", 1, 2))
+
 class WordTest(unittest.TestCase):
   def setUp(self):
     with open ("test/word_01.txt", "r") as myfile:
