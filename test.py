@@ -143,6 +143,8 @@ class IntegrationTest(unittest.TestCase):
       self.string1 = myfile.read()
     with open ("test/integration_02.txt", "r") as myfile:
       self.string2 = myfile.read()
+    with open ("test/integration_03.txt", "r") as myfile:
+      self.string3 = myfile.read()
 
   def test_word (self):
     result = expand_region_handler.expand(self.string1, 7, 7);
@@ -183,6 +185,14 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["string"], " foo.bar ")
     self.assertEqual(result["type"], "quotes")
     self.assertEqual(result["expand_stack"], ["word", "quotes"])
+
+  def test_skip_some_because_of_linebreak (self):
+    result = expand_region_handler.expand(self.string3, 22, 41);
+    self.assertEqual(result["start"], 12)
+    self.assertEqual(result["end"], 42)
+    self.assertEqual(result["string"], "\n  return {\n    foo: true\n  }\n")
+    self.assertEqual(result["type"], "symbol")
+    self.assertEqual(result["expand_stack"], ["symbols"])
 
 # def suite():
   # unittest.makeSuite(WordTest, "test")

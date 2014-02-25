@@ -1,26 +1,29 @@
 import re
 
 def expand(string, start, end):
-  expand_stack = ["word"]
+  expand_stack = []
 
-  result = expand_to_word(string, start, end)
-  if result:
-    result["expand_stack"] = expand_stack
-    return result
+  if selection_contain_linebreaks(string, start, end) == False:
+    expand_stack.append("word")
 
-  expand_stack.append("quotes")
+    result = expand_to_word(string, start, end)
+    if result:
+      result["expand_stack"] = expand_stack
+      return result
 
-  result = expand_to_quotes(string, start, end)
-  if result:
-    result["expand_stack"] = expand_stack
-    return result
+    expand_stack.append("quotes")
 
-  expand_stack.append("word_with_dots")
+    result = expand_to_quotes(string, start, end)
+    if result:
+      result["expand_stack"] = expand_stack
+      return result
 
-  result = expand_to_word_with_dots(string, start, end)
-  if result:
-    result["expand_stack"] = expand_stack
-    return result
+    expand_stack.append("word_with_dots")
+
+    result = expand_to_word_with_dots(string, start, end)
+    if result:
+      result["expand_stack"] = expand_stack
+      return result
 
   expand_stack.append("symbols")
 
