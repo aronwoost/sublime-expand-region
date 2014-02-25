@@ -139,6 +139,7 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 9)
     self.assertEqual(result["string"], "bar")
     self.assertEqual(result["type"], "word")
+    self.assertEqual(result["expand_stack"], ["word"])
 
   def test_quotes_inner (self):
     result = expand_region_handler.expand(self.string1, 6, 9);
@@ -146,6 +147,7 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 9)
     self.assertEqual(result["string"], "foo bar")
     self.assertEqual(result["type"], "quotes")
+    self.assertEqual(result["expand_stack"], ["word", "quotes"])
 
   def test_quotes_outer (self):
     result = expand_region_handler.expand(self.string1, 2, 9);
@@ -153,6 +155,7 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 10)
     self.assertEqual(result["string"], "\"foo bar\"")
     self.assertEqual(result["type"], "quotes")
+    self.assertEqual(result["expand_stack"], ["word", "quotes"])
 
   def test_symbol_inner (self):
     result = expand_region_handler.expand(self.string1, 1, 10);
@@ -160,6 +163,7 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 16)
     self.assertEqual(result["string"], "\"foo bar\" + \"x\"")
     self.assertEqual(result["type"], "symbol")
+    self.assertEqual(result["expand_stack"], ["word", "quotes", "word_with_dots", "symbols"])
 
   def test_dont_expand_to_dots (self):
     result = expand_region_handler.expand(self.string2, 2, 5);
@@ -167,6 +171,7 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 10)
     self.assertEqual(result["string"], " foo.bar ")
     self.assertEqual(result["type"], "quotes")
+    self.assertEqual(result["expand_stack"], ["word", "quotes"])
 
 # def suite():
   # unittest.makeSuite(WordTest, "test")
