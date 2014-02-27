@@ -1,29 +1,52 @@
 import re
 
 def expand(string, start, end):
-  expand_stack = []
 
   if selection_contain_linebreaks(string, start, end) == False:
-    expand_stack.append("word")
 
-    result = expand_to_word(string, start, end)
-    if result:
-      result["expand_stack"] = expand_stack
-      return result
+    line = get_line(string, start, end)
+    lineString = string[line["start"]:line["end"]]
 
-    expand_stack.append("quotes")
+    lineResult = expand_agains_line(lineString, start - line["start"], end - line["start"])
 
-    result = expand_to_quotes(string, start, end)
-    if result:
-      result["expand_stack"] = expand_stack
-      return result
+    if(lineResult):
+      lineResult["start"] = lineResult["start"] + line["start"]
+      lineResult["end"] = lineResult["end"] + line["start"]
+      lineResult[string] = string[lineResult["start"]:lineResult["end"]];
+      return lineResult
 
-    expand_stack.append("word_with_dots")
+  expand_stack = ["symbols"]
 
-    result = expand_to_word_with_dots(string, start, end)
-    if result:
-      result["expand_stack"] = expand_stack
-      return result
+  result = expand_to_symbols(string, start, end)
+  if result:
+    result["expand_stack"] = expand_stack
+    return result
+
+  print(None)
+
+def expand_agains_line(string, start, end):
+  expand_stack = []
+
+  expand_stack.append("word")
+
+  result = expand_to_word(string, start, end)
+  if result:
+    result["expand_stack"] = expand_stack
+    return result
+
+  expand_stack.append("quotes")
+
+  result = expand_to_quotes(string, start, end)
+  if result:
+    result["expand_stack"] = expand_stack
+    return result
+
+  expand_stack.append("word_with_dots")
+
+  result = expand_to_word_with_dots(string, start, end)
+  if result:
+    result["expand_stack"] = expand_stack
+    return result
 
   expand_stack.append("symbols")
 
@@ -32,7 +55,14 @@ def expand(string, start, end):
     result["expand_stack"] = expand_stack
     return result
 
-  print(None)
+  expand_stack.append("line")
+
+  result = expand_to_line(string, start, end)
+  if result:
+    result["expand_stack"] = expand_stack
+    return result
+
+  return None
 
 def selection_contain_linebreaks(string, startIndex, endIndex):
   linebreakRe = re.compile("(\n)")
@@ -43,6 +73,35 @@ def selection_contain_linebreaks(string, startIndex, endIndex):
     return True
   else:
     return False
+
+def get_line(string, startIndex, endIndex):
+  linebreakRe = re.compile(r'\n')
+
+  searchIndex = startIndex - 1;
+  while True:
+    if searchIndex < 0:
+      newStartIndex = searchIndex + 1
+      break
+    char = string[searchIndex:searchIndex+1]
+    if linebreakRe.match(char):
+      newStartIndex = searchIndex + 1
+      break
+    else:
+      searchIndex -= 1
+
+  searchIndex = endIndex;
+  while True:
+    if searchIndex > len(string) - 1:
+      newEndIndex = searchIndex
+      break
+    char = string[searchIndex:searchIndex+1]
+    if linebreakRe.match(char):
+      newEndIndex = searchIndex
+      break
+    else:
+      searchIndex += 1
+
+  return {"start": newStartIndex, "end": newEndIndex}
 
 def expand_to_word(string, startIndex, endIndex):
   negativeWordRe = re.compile("^[a-zA-Z0-9_$]*$");
@@ -123,14 +182,15 @@ def expand_to_line(string, startIndex, endIndex):
     else:
       searchIndex += 1
 
+  s = string[newStartIndex:newEndIndex]
+  r = spacesAndTabsRe.match(s)
+  if r:
+    newStartIndex = newStartIndex + r.end();
+
   try:
     if startIndex == newStartIndex and endIndex == newEndIndex:
       return None
     else:
-      s = string[newStartIndex:newEndIndex]
-      r = spacesAndTabsRe.match(s)
-      if r:
-        newStartIndex = newStartIndex + r.end();
       return create_return_obj(newStartIndex, newEndIndex, string, "line")
   except NameError:
     return None

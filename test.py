@@ -16,6 +16,18 @@ class LinebreaksTest(unittest.TestCase):
   def test_dont_find_linebreak (self):
     self.assertFalse(expand_region_handler.selection_contain_linebreaks("aaa", 1, 2))
 
+
+class GetLineTest(unittest.TestCase):
+  def setUp(self):
+    with open ("test/line_01.txt", "r") as myfile:
+      self.string1 = myfile.read()
+
+  def test_get_line (self):
+    result = expand_region_handler.get_line(self.string1, 13, 13);
+    self.assertEqual(result["start"], 8)
+    self.assertEqual(result["end"], 18)
+
+
 class WordTest(unittest.TestCase):
   def setUp(self):
     with open ("test/word_01.txt", "r") as myfile:
@@ -51,12 +63,14 @@ class WordTest(unittest.TestCase):
     result = expand_region_handler.expand_to_word("aaa", 0, 3);
     self.assertEqual(result, None)
 
+
 class WordWithDotsTest(unittest.TestCase):
   def test (self):
     result = expand_region_handler.expand_to_word_with_dots("foo.bar", 6, 7);
     self.assertEqual(result["start"], 0)
     self.assertEqual(result["end"], 7)
     self.assertEqual(result["string"], "foo.bar")
+
 
 class LineTest(unittest.TestCase):
   def setUp(self):
@@ -71,11 +85,16 @@ class LineTest(unittest.TestCase):
     self.assertEqual(result["start"], 10)
     self.assertEqual(result["end"], 18)
 
+  def test_existing_line_selection (self):
+    result = expand_region_handler.expand_to_line(self.string1, 10, 18);
+    self.assertEqual(result, None)
+
   def test_with_no_spaces_or_tabs_at_beginning (self):
     result = expand_region_handler.expand_to_line(self.string2, 6, 12);
     self.assertEqual(result["string"], "is it me")
     self.assertEqual(result["start"], 6)
     self.assertEqual(result["end"], 14)
+
 
 class QuoteTest(unittest.TestCase):
   def setUp(self):
@@ -107,6 +126,7 @@ class QuoteTest(unittest.TestCase):
     self.assertEqual(result["start"], 0)
     self.assertEqual(result["end"], 13)
     self.assertEqual(result["string"], "'test string'")
+
 
 class SymbolTest(unittest.TestCase):
   def setUp(self):
@@ -189,6 +209,22 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["string"], " foo.bar ")
     self.assertEqual(result["type"], "quotes")
     self.assertEqual(result["expand_stack"], ["word", "quotes"])
+
+  def test_expand_to_line (self):
+    result = expand_region_handler.expand(self.string3, 30, 35);
+    self.assertEqual(result["start"], 28)
+    self.assertEqual(result["end"], 37)
+    self.assertEqual(result["string"], "foo: true")
+    self.assertEqual(result["type"], "line")
+    self.assertEqual(result["expand_stack"], ["word", "quotes", "word_with_dots", "symbols", "line"])
+
+  def test_expand_to_symbol_from_line (self):
+    result = expand_region_handler.expand(self.string3, 28, 37);
+    self.assertEqual(result["start"], 23)
+    self.assertEqual(result["end"], 40)
+    self.assertEqual(result["string"], "\n    foo: true\n  ")
+    self.assertEqual(result["type"], "symbol")
+    self.assertEqual(result["expand_stack"], ["symbols"])
 
   def test_skip_some_because_of_linebreak (self):
     result = expand_region_handler.expand(self.string3, 22, 41);
