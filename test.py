@@ -1,5 +1,9 @@
 import unittest
-import expand_region_handler
+
+try:
+  import expand_region_handler
+except:
+  from . import expand_region_handler
 
 class LinebreaksTest(unittest.TestCase):
   def setUp(self):
