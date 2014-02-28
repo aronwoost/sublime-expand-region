@@ -208,7 +208,7 @@ def expand_to_quotes(string, startIndex, endIndex):
     if(startIndex == start and endIndex == end):
       return None
 
-    if(startIndex >= start and endIndex <= end):
+    if(startIndex > start and endIndex < end):
       if(startIndex == start + 1 and endIndex == end - 1):
         if(startIndex == start and endIndex == end):
           return None

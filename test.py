@@ -127,6 +127,14 @@ class QuoteTest(unittest.TestCase):
     self.assertEqual(result["end"], 13)
     self.assertEqual(result["string"], "'test string'")
 
+  def test_should_not_find1 (self):
+    result = expand_region_handler.expand_to_quotes(" ': '", 1, 1);
+    self.assertEqual(result, None)
+
+  def test_should_not_find2 (self):
+    result = expand_region_handler.expand_to_quotes("': '", 4, 4);
+    self.assertEqual(result, None)
+
 
 class SymbolTest(unittest.TestCase):
   def setUp(self):
