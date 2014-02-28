@@ -184,7 +184,7 @@ def expand_to_line(string, startIndex, endIndex):
 
   s = string[newStartIndex:newEndIndex]
   r = spacesAndTabsRe.match(s)
-  if r:
+  if r and r.end() <= startIndex:
     newStartIndex = newStartIndex + r.end();
 
   try:

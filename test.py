@@ -95,6 +95,24 @@ class LineTest(unittest.TestCase):
     self.assertEqual(result["start"], 6)
     self.assertEqual(result["end"], 14)
 
+  def test_with_indention (self):
+    result = expand_region_handler.expand_to_line(" aa", 0, 0);
+    self.assertEqual(result["string"], " aa")
+    self.assertEqual(result["start"], 0)
+    self.assertEqual(result["end"], 3)
+
+  def test_without_indention (self):
+    result = expand_region_handler.expand_to_line(" aa", 1, 1);
+    self.assertEqual(result["string"], "aa")
+    self.assertEqual(result["start"], 1)
+    self.assertEqual(result["end"], 3)
+
+  def test_with_indention2 (self):
+    result = expand_region_handler.expand_to_line("  aa", 1, 1);
+    self.assertEqual(result["string"], "  aa")
+    self.assertEqual(result["start"], 0)
+    self.assertEqual(result["end"], 4)
+
 
 class QuoteTest(unittest.TestCase):
   def setUp(self):
