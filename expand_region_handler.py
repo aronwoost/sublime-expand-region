@@ -153,6 +153,81 @@ def _expand_to_regex_rule(string, startIndex, endIndex, negativeRe, positiveRe, 
   except NameError:
     return None
 
+def expand_to_semantic_unit(string, startIndex, endIndex):
+  openingSymbols = "([{"
+  closingSymbols = ")]}"
+  symbols = "([{)]}"
+  breakSymbols = " ,;"
+  lookBackBreakSymbols = ",;([{"
+  lookForwardBreakSymbols = ",;)]}"
+  symbolsRe = re.compile(r'(['+re.escape(symbols)+re.escape(breakSymbols)+'])')
+
+  counterparts = {
+    "(":")",
+    "{":"}",
+    "[":"]",
+    ")":"(",
+    "}":"{",
+    "]":"["
+  }
+
+  symbolStack = []
+
+  searchIndex = startIndex - 1;
+  while True:
+    if(searchIndex < 0):
+      return None
+    char = string[searchIndex:searchIndex+1]
+    result = symbolsRe.match(char)
+    if result:
+      symbol = result.group()
+
+      if(symbol in lookBackBreakSymbols and len(symbolStack) == 0):
+        newStartIndex = searchIndex + 1
+        break
+
+      if symbol in symbols:
+        if len(symbolStack) > 0 and symbolStack[len(symbolStack) - 1] == counterparts[symbol]:
+          symbolStack.pop()
+        else:
+          symbolStack.append(symbol)
+
+    print(char, symbolStack)
+    searchIndex -= 1
+
+  searchIndex = endIndex;
+  while True:
+    char = string[searchIndex:searchIndex+1]
+    result = symbolsRe.match(char)
+    if result:
+      symbol = result.group()
+
+      if len(symbolStack) == 0 and symbol in lookForwardBreakSymbols:
+        newEndIndex = searchIndex;
+        break
+
+      if symbol in symbols:
+        if len(symbolStack) > 0 and symbolStack[len(symbolStack) - 1] == counterparts[symbol]:
+          symbolStack.pop()
+        else:
+          symbolStack.append(symbol)
+
+    if searchIndex == len(string):
+      break
+
+    print(char, symbolStack)
+    searchIndex += 1
+
+  try:
+    if startIndex == newStartIndex and endIndex == newEndIndex:
+      return None
+    else:
+      return create_return_obj(newStartIndex, newEndIndex, string, "semantic_unit")
+  except NameError:
+    return None
+
+
+
 def expand_to_line(string, startIndex, endIndex):
   linebreakRe = re.compile(r'\n')
 
