@@ -6,6 +6,8 @@
 
 ExpandRegion works a bit like the build in "Expand Selection to Scope", however it does not depend on Scopes (Scopes are used by ST to "understand" code, i.e. for syntax highlighting). Therefore selection expansion can be more granular and customizable.
 
+It works simlar to ExpandRegion for Emacs and "Structural Selection" (Control-W) in the JetBrain IDE's (i.e. IntelliJ IDEA).
+
 Video comming soon.
 
 ## Installing
