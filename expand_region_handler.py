@@ -162,6 +162,8 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
   lookForwardBreakSymbols = ",;)]}"
   symbolsRe = re.compile(r'(['+re.escape(symbols)+re.escape(breakSymbols)+'])')
 
+  spacesAndTabsRe = re.compile(r'([ \t]+)')
+
   counterparts = {
     "(":")",
     "{":"}",
@@ -217,6 +219,11 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
 
     print(char, symbolStack)
     searchIndex += 1
+
+  s = string[newStartIndex:newEndIndex]
+  r = spacesAndTabsRe.match(s)
+  if r and r.end() <= startIndex:
+    newStartIndex = newStartIndex + r.end();
 
   try:
     if startIndex == newStartIndex and endIndex == newEndIndex:

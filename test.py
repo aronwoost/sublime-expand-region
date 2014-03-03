@@ -179,8 +179,8 @@ class SemanticUnit(unittest.TestCase):
 
   def test_3 (self):
     result = expand_region_handler.expand_to_semantic_unit(self.string3, 13, 13);
-    self.assertEqual(result["string"], " foo.bar['property'].getX()")
-    self.assertEqual(result["start"], 12)
+    self.assertEqual(result["string"], "foo.bar['property'].getX()")
+    self.assertEqual(result["start"], 13)
     self.assertEqual(result["end"], 39)
 
   def test_4 (self):
