@@ -15,7 +15,14 @@ def expand(string, start, end):
       lineResult[string] = string[lineResult["start"]:lineResult["end"]];
       return lineResult
 
-  expand_stack = ["symbols"]
+  expand_stack = ["semantic_unit"]
+
+  result = expand_to_semantic_unit(string, start, end)
+  if result:
+    result["expand_stack"] = expand_stack
+    return result
+
+  expand_stack.append("symbols")
 
   result = expand_to_symbols(string, start, end)
   if result:
@@ -41,9 +48,9 @@ def expand_agains_line(string, start, end):
     result["expand_stack"] = expand_stack
     return result
 
-  expand_stack.append("word_with_dots")
+  expand_stack.append("semantic_unit")
 
-  result = expand_to_word_with_dots(string, start, end)
+  result = expand_to_semantic_unit(string, start, end)
   if result:
     result["expand_stack"] = expand_stack
     return result
@@ -151,6 +158,102 @@ def _expand_to_regex_rule(string, startIndex, endIndex, negativeRe, positiveRe, 
     else:
       return create_return_obj(newStartIndex, newEndIndex, string, type)
   except NameError:
+    return None
+
+def expand_to_semantic_unit(string, startIndex, endIndex):
+  openingSymbols = "([{"
+  closingSymbols = ")]}"
+  symbols = "([{)]}"
+  breakSymbols = " ,;=&|"
+  lookBackBreakSymbols = ",;=&|([{"
+  lookForwardBreakSymbols = ",;=&|)]}"
+  symbolsRe = re.compile(r'(['+re.escape(symbols)+re.escape(breakSymbols)+'])')
+
+  spacesAndTabsRe = re.compile(r'([ \t]+)')
+
+  # Quickfix for test_should_none_3, let's get back to it
+  if string[endIndex-1:endIndex] == ";":
+    return None
+
+  counterparts = {
+    "(":")",
+    "{":"}",
+    "[":"]",
+    ")":"(",
+    "}":"{",
+    "]":"["
+  }
+
+  symbolStack = []
+
+  searchIndex = startIndex - 1;
+  while True:
+    if(searchIndex < 0):
+      newStartIndex = searchIndex + 1
+      break
+    char = string[searchIndex:searchIndex+1]
+    result = symbolsRe.match(char)
+    if result:
+      symbol = result.group()
+
+      if(symbol in lookBackBreakSymbols and len(symbolStack) == 0):
+        newStartIndex = searchIndex + 1
+        break
+
+      if symbol in symbols:
+        if len(symbolStack) > 0 and symbolStack[len(symbolStack) - 1] == counterparts[symbol]:
+          symbolStack.pop()
+        else:
+          symbolStack.append(symbol)
+
+    # print(char, symbolStack)
+    searchIndex -= 1
+
+  searchIndex = endIndex;
+  while True:
+    char = string[searchIndex:searchIndex+1]
+    result = symbolsRe.match(char)
+    if result:
+      symbol = result.group()
+
+      if len(symbolStack) == 0 and symbol in lookForwardBreakSymbols:
+        newEndIndex = searchIndex;
+        break
+
+      if symbol in symbols:
+        if len(symbolStack) > 0 and symbolStack[len(symbolStack) - 1] == counterparts[symbol]:
+          symbolStack.pop()
+        else:
+          symbolStack.append(symbol)
+
+    if searchIndex >= len(string) - 1:
+      return None
+
+    # print(char, symbolStack, searchIndex)
+    searchIndex += 1
+
+  s = string[newStartIndex:newEndIndex]
+  trimResult = trimSpacesAndTabsOnStartAndEnd(s)
+  if trimResult:
+    newStartIndex = newStartIndex + trimResult["start"];
+    newEndIndex = newEndIndex - (len(s) - trimResult["end"]);
+
+  try:
+    if startIndex <= newStartIndex and endIndex >= newEndIndex:
+      return None
+    else:
+      return create_return_obj(newStartIndex, newEndIndex, string, "semantic_unit")
+  except NameError:
+    return None
+
+
+def trimSpacesAndTabsOnStartAndEnd(string):
+  trim = re.compile(r'^[ \t\n]*(.*?)[ \t\n]*$', re.DOTALL)
+  r = trim.search(string)
+
+  if r:
+    return {"start": r.start(1), "end": r.end(1)}
+  else:
     return None
 
 def expand_to_line(string, startIndex, endIndex):

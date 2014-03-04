@@ -154,6 +154,114 @@ class QuoteTest(unittest.TestCase):
     self.assertEqual(result, None)
 
 
+class TrimTest(unittest.TestCase):
+  def setUp(self):
+    with open ("test/trim_01.txt", "r") as myfile:
+      self.string1 = myfile.read()
+    with open ("test/trim_02.txt", "r") as myfile:
+      self.string2 = myfile.read()
+
+  def test_1 (self):
+    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd("  aa  ");
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 4)
+
+  def test_2 (self):
+    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd("  'a a'  ");
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 7)
+
+  def test_3 (self):
+    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd(self.string1);
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 11)
+
+  def test_4 (self):
+    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd(" foo.bar['property'].getX()");
+    self.assertEqual(result["start"], 1)
+    self.assertEqual(result["end"], 27)
+
+  def test_5 (self):
+    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd(self.string2);
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 49)
+
+class SemanticUnit(unittest.TestCase):
+  def setUp(self):
+    with open ("test/semantic_unit_01.txt", "r") as myfile:
+      self.string1 = myfile.read()
+    with open ("test/semantic_unit_02.txt", "r") as myfile:
+      self.string2 = myfile.read()
+    with open ("test/semantic_unit_03.txt", "r") as myfile:
+      self.string3 = myfile.read()
+    with open ("test/semantic_unit_04.txt", "r") as myfile:
+      self.string4 = myfile.read()
+    with open ("test/semantic_unit_05.txt", "r") as myfile:
+      self.string5 = myfile.read()
+    with open ("test/semantic_unit_06.txt", "r") as myfile:
+      self.string6 = myfile.read()
+    with open ("test/semantic_unit_07.txt", "r") as myfile:
+      self.string7 = myfile.read()
+
+  def test_1 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string1, 13, 13);
+    self.assertEqual(result["string"], "foo.bar['property'].getX()")
+    self.assertEqual(result["start"], 7)
+    self.assertEqual(result["end"], 33)
+
+  def test_2 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string2, 13, 13);
+    self.assertEqual(result["string"], "foo.bar['prop,erty'].getX()")
+    self.assertEqual(result["start"], 7)
+    self.assertEqual(result["end"], 34)
+
+  def test_3 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string3, 13, 13);
+    self.assertEqual(result["string"], "foo.bar['property'].getX()")
+    self.assertEqual(result["start"], 13)
+    self.assertEqual(result["end"], 39)
+
+  def test_4 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string4, 11, 11);
+    self.assertEqual(result["start"], 7)
+    self.assertEqual(result["end"], 51)
+
+  def test_5 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string4, 6, 52);
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 52)
+
+  def test_6 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string5, 15, 15);
+    self.assertEqual(result["string"], "o.getData(\"bar\")")
+    self.assertEqual(result["start"], 8)
+    self.assertEqual(result["end"], 24)
+
+  def test_7 (self):
+    result = expand_region_handler.expand_to_semantic_unit("if (foo.get('a') && bar.get('b')) {", 6, 6);
+    self.assertEqual(result["string"], "foo.get('a')")
+    self.assertEqual(result["start"], 4)
+    self.assertEqual(result["end"], 16)
+
+  def test_8 (self):
+    result = expand_region_handler.expand_to_semantic_unit("if (foo.get('a') || bar.get('b')) {", 6, 6);
+    self.assertEqual(result["string"], "foo.get('a')")
+    self.assertEqual(result["start"], 4)
+    self.assertEqual(result["end"], 16)
+
+  def test_should_none (self):
+    result = expand_region_handler.expand_to_semantic_unit("aaa", 1, 1);
+    self.assertEqual(result, None)
+
+  def test_should_none_2 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string6, 6, 23);
+    self.assertEqual(result, None)
+
+  def test_should_none_3 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string7, 17, 33);
+    self.assertEqual(result, None)
+
+
 class SymbolTest(unittest.TestCase):
   def setUp(self):
     with open ("test/symbol_01.txt", "r") as myfile:
@@ -225,8 +333,8 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["start"], 1)
     self.assertEqual(result["end"], 16)
     self.assertEqual(result["string"], "\"foo bar\" + \"x\"")
-    self.assertEqual(result["type"], "symbol")
-    self.assertEqual(result["expand_stack"], ["word", "quotes", "word_with_dots", "symbols"])
+    self.assertEqual(result["type"], "semantic_unit")
+    self.assertEqual(result["expand_stack"], ["word", "quotes", "semantic_unit"])
 
   def test_dont_expand_to_dots (self):
     result = expand_region_handler.expand(self.string2, 2, 5);
@@ -242,7 +350,7 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 37)
     self.assertEqual(result["string"], "foo: true")
     self.assertEqual(result["type"], "line")
-    self.assertEqual(result["expand_stack"], ["word", "quotes", "word_with_dots", "symbols", "line"])
+    self.assertEqual(result["expand_stack"], ["word", "quotes", "semantic_unit", "symbols", "line"])
 
   def test_expand_to_symbol_from_line (self):
     result = expand_region_handler.expand(self.string3, 28, 37);
@@ -250,15 +358,22 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 40)
     self.assertEqual(result["string"], "\n    foo: true\n  ")
     self.assertEqual(result["type"], "symbol")
-    self.assertEqual(result["expand_stack"], ["symbols"])
+    self.assertEqual(result["expand_stack"], ["semantic_unit", "symbols"])
 
   def test_skip_some_because_of_linebreak (self):
     result = expand_region_handler.expand(self.string3, 22, 41);
+    self.assertEqual(result["start"], 15)
+    self.assertEqual(result["end"], 41)
+    self.assertEqual(result["string"], "return {\n    foo: true\n  }")
+    self.assertEqual(result["type"], "semantic_unit")
+    self.assertEqual(result["expand_stack"], ["semantic_unit"])
+
+  def test_skip_some_because_of_linebreak_2 (self):
+    result = expand_region_handler.expand(self.string3, 15, 41);
     self.assertEqual(result["start"], 12)
     self.assertEqual(result["end"], 42)
-    self.assertEqual(result["string"], "\n  return {\n    foo: true\n  }\n")
     self.assertEqual(result["type"], "symbol")
-    self.assertEqual(result["expand_stack"], ["symbols"])
+    self.assertEqual(result["expand_stack"], ["semantic_unit", "symbols"])
 
 # def suite():
   # unittest.makeSuite(WordTest, "test")
