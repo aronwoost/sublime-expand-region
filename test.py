@@ -309,8 +309,8 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["start"], 1)
     self.assertEqual(result["end"], 16)
     self.assertEqual(result["string"], "\"foo bar\" + \"x\"")
-    self.assertEqual(result["type"], "symbol")
-    self.assertEqual(result["expand_stack"], ["word", "quotes", "word_with_dots", "symbols"])
+    self.assertEqual(result["type"], "semantic_unit")
+    self.assertEqual(result["expand_stack"], ["word", "quotes", "semantic_unit"])
 
   def test_dont_expand_to_dots (self):
     result = expand_region_handler.expand(self.string2, 2, 5);
@@ -326,7 +326,7 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 37)
     self.assertEqual(result["string"], "foo: true")
     self.assertEqual(result["type"], "line")
-    self.assertEqual(result["expand_stack"], ["word", "quotes", "word_with_dots", "symbols", "line"])
+    self.assertEqual(result["expand_stack"], ["word", "quotes", "semantic_unit", "symbols", "line"])
 
   def test_expand_to_symbol_from_line (self):
     result = expand_region_handler.expand(self.string3, 28, 37);
@@ -334,15 +334,22 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 40)
     self.assertEqual(result["string"], "\n    foo: true\n  ")
     self.assertEqual(result["type"], "symbol")
-    self.assertEqual(result["expand_stack"], ["symbols"])
+    self.assertEqual(result["expand_stack"], ["semantic_unit", "symbols"])
 
   def test_skip_some_because_of_linebreak (self):
     result = expand_region_handler.expand(self.string3, 22, 41);
+    self.assertEqual(result["start"], 15)
+    self.assertEqual(result["end"], 41)
+    self.assertEqual(result["string"], "return {\n    foo: true\n  }")
+    self.assertEqual(result["type"], "semantic_unit")
+    self.assertEqual(result["expand_stack"], ["semantic_unit"])
+
+  def test_skip_some_because_of_linebreak_2 (self):
+    result = expand_region_handler.expand(self.string3, 15, 41);
     self.assertEqual(result["start"], 12)
     self.assertEqual(result["end"], 42)
-    self.assertEqual(result["string"], "\n  return {\n    foo: true\n  }\n")
     self.assertEqual(result["type"], "symbol")
-    self.assertEqual(result["expand_stack"], ["symbols"])
+    self.assertEqual(result["expand_stack"], ["semantic_unit", "symbols"])
 
 # def suite():
   # unittest.makeSuite(WordTest, "test")

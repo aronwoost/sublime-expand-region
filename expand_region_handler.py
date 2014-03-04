@@ -15,7 +15,14 @@ def expand(string, start, end):
       lineResult[string] = string[lineResult["start"]:lineResult["end"]];
       return lineResult
 
-  expand_stack = ["symbols"]
+  expand_stack = ["semantic_unit"]
+
+  result = expand_to_semantic_unit(string, start, end)
+  if result:
+    result["expand_stack"] = expand_stack
+    return result
+
+  expand_stack.append("symbols")
 
   result = expand_to_symbols(string, start, end)
   if result:
@@ -41,9 +48,9 @@ def expand_agains_line(string, start, end):
     result["expand_stack"] = expand_stack
     return result
 
-  expand_stack.append("word_with_dots")
+  expand_stack.append("semantic_unit")
 
-  result = expand_to_word_with_dots(string, start, end)
+  result = expand_to_semantic_unit(string, start, end)
   if result:
     result["expand_stack"] = expand_stack
     return result
@@ -215,10 +222,10 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
         else:
           symbolStack.append(symbol)
 
-    if searchIndex == len(string) - 1:
+    if searchIndex >= len(string) - 1:
       return None
 
-    # print(char, symbolStack)
+    # print(char, symbolStack, searchIndex)
     searchIndex += 1
 
   s = string[newStartIndex:newEndIndex]
@@ -237,7 +244,7 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
 
 
 def trimSpacesAndTabsOnStartAndEnd(string):
-  trim = re.compile(r'^[ \t]*(.*?)[ \t]*$', re.DOTALL)
+  trim = re.compile(r'^[ \t\n]*(.*?)[ \t\n]*$', re.DOTALL)
   r = trim.search(string)
 
   if r:
