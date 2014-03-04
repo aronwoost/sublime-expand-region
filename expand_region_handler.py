@@ -157,9 +157,9 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
   openingSymbols = "([{"
   closingSymbols = ")]}"
   symbols = "([{)]}"
-  breakSymbols = " ,;"
-  lookBackBreakSymbols = ",;([{"
-  lookForwardBreakSymbols = ",;)]}"
+  breakSymbols = " ,;="
+  lookBackBreakSymbols = ",;=([{"
+  lookForwardBreakSymbols = ",;=)]}"
   symbolsRe = re.compile(r'(['+re.escape(symbols)+re.escape(breakSymbols)+'])')
 
   spacesAndTabsRe = re.compile(r'([ \t]+)')
@@ -178,7 +178,8 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
   searchIndex = startIndex - 1;
   while True:
     if(searchIndex < 0):
-      return None
+      newStartIndex = searchIndex + 1
+      break
     char = string[searchIndex:searchIndex+1]
     result = symbolsRe.match(char)
     if result:
@@ -214,16 +215,17 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
         else:
           symbolStack.append(symbol)
 
-    if searchIndex == len(string):
-      break
+    if searchIndex == len(string) - 1:
+      return None
 
     print(char, symbolStack)
     searchIndex += 1
 
   s = string[newStartIndex:newEndIndex]
-  r = spacesAndTabsRe.match(s)
-  if r and r.end() <= startIndex:
-    newStartIndex = newStartIndex + r.end();
+  trimResult = trimSpacesAndTabsOnStartAndEnd(s)
+  if trimResult:
+    newStartIndex = newStartIndex + trimResult["start"];
+    newEndIndex = newEndIndex - (len(s) - trimResult["end"]);
 
   try:
     if startIndex == newStartIndex and endIndex == newEndIndex:

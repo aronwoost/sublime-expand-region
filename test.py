@@ -196,6 +196,8 @@ class SemanticUnit(unittest.TestCase):
       self.string3 = myfile.read()
     with open ("test/semantic_unit_04.txt", "r") as myfile:
       self.string4 = myfile.read()
+    with open ("test/semantic_unit_05.txt", "r") as myfile:
+      self.string5 = myfile.read()
 
   def test_1 (self):
     result = expand_region_handler.expand_to_semantic_unit(self.string1, 13, 13);
@@ -217,9 +219,19 @@ class SemanticUnit(unittest.TestCase):
 
   def test_4 (self):
     result = expand_region_handler.expand_to_semantic_unit(self.string4, 11, 11);
-    # self.assertEqual(result["string"], " foo.bar['property'].getX()")
     self.assertEqual(result["start"], 7)
     self.assertEqual(result["end"], 51)
+
+  def test_5 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string4, 6, 52);
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 52)
+
+  def test_6 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string5, 15, 15);
+    self.assertEqual(result["string"], "o.getData(\"bar\")")
+    self.assertEqual(result["start"], 8)
+    self.assertEqual(result["end"], 24)
 
   def test_should_none (self):
     result = expand_region_handler.expand_to_semantic_unit("aaa", 1, 1);
