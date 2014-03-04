@@ -233,6 +233,18 @@ class SemanticUnit(unittest.TestCase):
     self.assertEqual(result["start"], 8)
     self.assertEqual(result["end"], 24)
 
+  def test_7 (self):
+    result = expand_region_handler.expand_to_semantic_unit("if (foo.get('a') && bar.get('b')) {", 6, 6);
+    self.assertEqual(result["string"], "foo.get('a')")
+    self.assertEqual(result["start"], 4)
+    self.assertEqual(result["end"], 16)
+
+  def test_8 (self):
+    result = expand_region_handler.expand_to_semantic_unit("if (foo.get('a') || bar.get('b')) {", 6, 6);
+    self.assertEqual(result["string"], "foo.get('a')")
+    self.assertEqual(result["start"], 4)
+    self.assertEqual(result["end"], 16)
+
   def test_should_none (self):
     result = expand_region_handler.expand_to_semantic_unit("aaa", 1, 1);
     self.assertEqual(result, None)

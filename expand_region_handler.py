@@ -164,9 +164,9 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
   openingSymbols = "([{"
   closingSymbols = ")]}"
   symbols = "([{)]}"
-  breakSymbols = " ,;="
-  lookBackBreakSymbols = ",;=([{"
-  lookForwardBreakSymbols = ",;=)]}"
+  breakSymbols = " ,;=&|"
+  lookBackBreakSymbols = ",;=&|([{"
+  lookForwardBreakSymbols = ",;=&|)]}"
   symbolsRe = re.compile(r'(['+re.escape(symbols)+re.escape(breakSymbols)+'])')
 
   spacesAndTabsRe = re.compile(r'([ \t]+)')
