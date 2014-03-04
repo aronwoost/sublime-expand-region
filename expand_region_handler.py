@@ -234,6 +234,14 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
     return None
 
 
+def trimSpacesAndTabsOnStartAndEnd(string):
+  trim = re.compile(r'^[ \t]*(.*?)[ \t]*$', re.DOTALL)
+  r = trim.search(string)
+
+  if r:
+    return {"start": r.start(1), "end": r.end(1)}
+  else:
+    return None
 
 def expand_to_line(string, startIndex, endIndex):
   linebreakRe = re.compile(r'\n')

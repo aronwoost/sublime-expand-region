@@ -154,6 +154,38 @@ class QuoteTest(unittest.TestCase):
     self.assertEqual(result, None)
 
 
+class TrimTest(unittest.TestCase):
+  def setUp(self):
+    with open ("test/trim_01.txt", "r") as myfile:
+      self.string1 = myfile.read()
+    with open ("test/trim_02.txt", "r") as myfile:
+      self.string2 = myfile.read()
+
+  def test_1 (self):
+    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd("  aa  ");
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 4)
+
+  def test_2 (self):
+    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd("  'a a'  ");
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 7)
+
+  def test_3 (self):
+    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd(self.string1);
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 11)
+
+  def test_4 (self):
+    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd(" foo.bar['property'].getX()");
+    self.assertEqual(result["start"], 1)
+    self.assertEqual(result["end"], 27)
+
+  def test_5 (self):
+    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd(self.string2);
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 49)
+
 class SemanticUnit(unittest.TestCase):
   def setUp(self):
     with open ("test/semantic_unit_01.txt", "r") as myfile:
