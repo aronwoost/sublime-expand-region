@@ -200,6 +200,8 @@ class SemanticUnit(unittest.TestCase):
       self.string5 = myfile.read()
     with open ("test/semantic_unit_06.txt", "r") as myfile:
       self.string6 = myfile.read()
+    with open ("test/semantic_unit_07.txt", "r") as myfile:
+      self.string7 = myfile.read()
 
   def test_1 (self):
     result = expand_region_handler.expand_to_semantic_unit(self.string1, 13, 13);
@@ -253,7 +255,10 @@ class SemanticUnit(unittest.TestCase):
 
   def test_should_none_2 (self):
     result = expand_region_handler.expand_to_semantic_unit(self.string6, 6, 23);
-    # print result
+    self.assertEqual(result, None)
+
+  def test_should_none_3 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string7, 17, 33);
     self.assertEqual(result, None)
 
 
