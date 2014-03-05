@@ -204,6 +204,8 @@ class SemanticUnit(unittest.TestCase):
       self.string7 = myfile.read()
     with open ("test/semantic_unit_08.txt", "r") as myfile:
       self.string8 = myfile.read()
+    with open ("test/semantic_unit_09.txt", "r") as myfile:
+      self.string9 = myfile.read()
 
   def test_1 (self):
     result = expand_region_handler.expand_to_semantic_unit(self.string1, 13, 13);
@@ -250,6 +252,12 @@ class SemanticUnit(unittest.TestCase):
     self.assertEqual(result["string"], "foo.get('a')")
     self.assertEqual(result["start"], 4)
     self.assertEqual(result["end"], 16)
+
+  def test_9 (self):
+    result = expand_region_handler.expand_to_semantic_unit(self.string9, 0, 14);
+    self.assertEqual(result["string"], "if(foo || bar) {\n}")
+    self.assertEqual(result["start"], 0)
+    self.assertEqual(result["end"], 18)
 
   def test_should_none (self):
     result = expand_region_handler.expand_to_semantic_unit("aaa", 1, 1);

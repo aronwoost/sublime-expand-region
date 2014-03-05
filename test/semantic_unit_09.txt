@@ -1,0 +1,4 @@
+if(foo || bar) {
+}
+
+var a = "b";

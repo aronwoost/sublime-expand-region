@@ -164,16 +164,12 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
   openingSymbols = "([{"
   closingSymbols = ")]}"
   symbols = "([{)]}"
-  breakSymbols = " ,;=&|"
-  lookBackBreakSymbols = ",;=&|([{"
-  lookForwardBreakSymbols = ",;=&|)]}"
+  breakSymbols = " ,;=&|\n"
+  lookBackBreakSymbols = ",;=&|\n([{" #16
+  lookForwardBreakSymbols = ",;=&|\n)]}"
   symbolsRe = re.compile(r'(['+re.escape(symbols)+re.escape(breakSymbols)+'])')
 
   spacesAndTabsRe = re.compile(r'([ \t]+)')
-
-  # Quickfix for test_should_none_3, let's get back to it
-  if string[endIndex-1:endIndex] == ";":
-    return None
 
   counterparts = {
     "(":")",
