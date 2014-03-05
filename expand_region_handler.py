@@ -239,10 +239,13 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
     newEndIndex = newEndIndex - (len(s) - trimResult["end"]);
 
   try:
-    if startIndex <= newStartIndex and endIndex >= newEndIndex:
+    if newStartIndex == startIndex and newEndIndex == endIndex:
       return None
-    else:
-      return create_return_obj(newStartIndex, newEndIndex, string, "semantic_unit")
+
+    if newStartIndex > startIndex or newEndIndex < endIndex:
+      return None
+
+    return create_return_obj(newStartIndex, newEndIndex, string, "semantic_unit")
   except NameError:
     return None
 
