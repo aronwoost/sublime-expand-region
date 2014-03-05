@@ -64,12 +64,12 @@ def expand_agains_line(string, start, end):
 
   expand_stack.append("line")
 
-  result = expand_to_line(string, start, end)
-  if result:
-    result["expand_stack"] = expand_stack
-    return result
+  # result = expand_to_line(string, start, end)
+  # if result:
+  #   result["expand_stack"] = expand_stack
+  #   return result
 
-  return None
+  # return None
 
 def selection_contain_linebreaks(string, startIndex, endIndex):
   linebreakRe = re.compile("(\n)")

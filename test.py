@@ -362,13 +362,13 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["type"], "quotes")
     self.assertEqual(result["expand_stack"], ["word", "quotes"])
 
-  def test_expand_to_line (self):
-    result = expand_region_handler.expand(self.string3, 30, 35);
-    self.assertEqual(result["start"], 28)
-    self.assertEqual(result["end"], 37)
-    self.assertEqual(result["string"], "foo: true")
-    self.assertEqual(result["type"], "line")
-    self.assertEqual(result["expand_stack"], ["word", "quotes", "semantic_unit", "symbols", "line"])
+  # def test_expand_to_line (self):
+  #   result = expand_region_handler.expand(self.string3, 30, 35);
+  #   self.assertEqual(result["start"], 28)
+  #   self.assertEqual(result["end"], 37)
+  #   self.assertEqual(result["string"], "foo: true")
+  #   self.assertEqual(result["type"], "line")
+  #   self.assertEqual(result["expand_stack"], ["word", "quotes", "semantic_unit", "symbols", "line"])
 
   def test_expand_to_symbol_from_line (self):
     result = expand_region_handler.expand(self.string3, 28, 37);
