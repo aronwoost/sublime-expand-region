@@ -41,10 +41,10 @@ The "Packages" directory is located at:
 
 ## Using
 
-By default **no shortcut is set**. I recommend using the shortcut for the build in "Expand Selection to Scope". Open "Key Bindings - User" and add to following line:
-```
-{ "keys": ["super+shift+space"], "command": "expand_region" }
-```
+- Use use `cmd+shift+P` then `ExpandRegion`
+- Or (**recommended**) set a shortcut.
+  I recommend using the shortcut for the build in "Expand Selection to Scope". Open "Key Bindings - User" and add to following line: 
+  `{ "keys": ["super+shift+space"], "command": "expand_region" }`
 
 ## Develop
 
