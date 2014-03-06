@@ -8,6 +8,8 @@ ExpandRegion works a bit like the build in "Expand Selection to Scope", however 
 
 It works simlar to ExpandRegion for Emacs and "Structural Selection" (Control-W) in the JetBrain IDE's (i.e. IntelliJ IDEA).
 
+Currently the plugin works best with C'ish language syntaxes (including Java and JavaScript). For other language and textfiles or markdown is does little or nothing. [Feature requests or bug reports welcome](https://github.com/aronwoost/sublime-expand-region/issues).
+
 Video comming soon.
 
 ## Installing
