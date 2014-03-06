@@ -1,0 +1,33 @@
+
+
+
+UPDATE TIME!
+
+Welcome to ExpandRegion for Sublime Text v0.4.0
+
+
+
+
+
+New:
+
+- Improved expansion by checking semantic units
+
+
+
+
+
+Help!
+
+
+Report Bugs:
+
+  -> https://github.com/aronwoost/sublime-expand-region/issues
+
+What language do you want to have supported:
+
+  -> https://github.com/aronwoost/sublime-expand-region/issues
+
+What shortcut:
+
+  -> https://github.com/aronwoost/sublime-expand-region/issues/7
