@@ -10,7 +10,21 @@ It works simlar to ExpandRegion for Emacs and "Structural Selection" (Control-W)
 
 Currently the plugin works best with C'ish language syntaxes (including Java and JavaScript). For other language and textfiles or markdown is does little or nothing. [Feature requests or bug reports welcome](https://github.com/aronwoost/sublime-expand-region/issues).
 
-Video comming soon.
+## Example
+
+![](http://aronwoost.github.io/expand-region.gif)
+
+1. Expand selection to word
+2. Expand selection to quotes (content only)
+3. Expand selection to quotes (with quotes)
+4. Expand selection to square braces
+5. Expand selection to expression
+6. Expand selection to content of braces (all arguments in this case)
+7. Expand selection to line
+8. Expand selection to function body (w/o curly brace)
+9. Expand selection to function body (with curly brace)
+
+and so on...
 
 ## Installing
 
