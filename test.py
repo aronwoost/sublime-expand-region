@@ -1,9 +1,25 @@
 import unittest
 
 try:
+  import get_line
   import expand_region_handler
+  import expand_to_word
+  import expand_to_word_with_dots
+  import expand_to_symbols
+  import expand_to_quotes
+  import expand_to_line
+  import expand_to_semantic_unit
+  import utils
 except:
+  from . import get_line
   from . import expand_region_handler
+  from . import expand_to_word
+  from . import expand_to_word_with_dots
+  from . import expand_to_symbols
+  from . import expand_to_quotes
+  from . import expand_to_line
+  from . import expand_to_semantic_unit
+  from . import utils
 
 class LinebreaksTest(unittest.TestCase):
   def setUp(self):
@@ -11,10 +27,10 @@ class LinebreaksTest(unittest.TestCase):
       self.string1 = myfile.read()
 
   def test_find_linebreak (self):
-    self.assertTrue(expand_region_handler.selection_contain_linebreaks(self.string1, 0, 8))
+    self.assertTrue(utils.selection_contain_linebreaks(self.string1, 0, 8))
 
   def test_dont_find_linebreak (self):
-    self.assertFalse(expand_region_handler.selection_contain_linebreaks("aaa", 1, 2))
+    self.assertFalse(utils.selection_contain_linebreaks("aaa", 1, 2))
 
 
 class GetLineTest(unittest.TestCase):
@@ -23,7 +39,7 @@ class GetLineTest(unittest.TestCase):
       self.string1 = myfile.read()
 
   def test_get_line (self):
-    result = expand_region_handler.get_line(self.string1, 13, 13);
+    result = get_line.get_line(self.string1, 13, 13);
     self.assertEqual(result["start"], 8)
     self.assertEqual(result["end"], 18)
 
@@ -34,39 +50,39 @@ class WordTest(unittest.TestCase):
       self.string1 = myfile.read()
 
   def test_word_with_whitespaces_around (self):
-    result = expand_region_handler.expand_to_word(" hello ", 3, 3);
+    result = expand_to_word.expand_to_word(" hello ", 3, 3);
     self.assertEqual(result["start"], 1)
     self.assertEqual(result["end"], 6)
     self.assertEqual(result["string"], "hello")
 
   def test_dont_find_word (self):
-    result = expand_region_handler.expand_to_word(self.string1, 1, 10);
+    result = expand_to_word.expand_to_word(self.string1, 1, 10);
     self.assertEqual(result, None)
 
   def test_dont_find_word2 (self):
-    result = expand_region_handler.expand_to_word(" ee ee", 2, 5);
+    result = expand_to_word.expand_to_word(" ee ee", 2, 5);
     self.assertEqual(result, None)
 
   def test_string_is_only_word (self):
-    result = expand_region_handler.expand_to_word("bar", 1, 1);
+    result = expand_to_word.expand_to_word("bar", 1, 1);
     self.assertEqual(result["start"], 0)
     self.assertEqual(result["end"], 3)
     self.assertEqual(result["string"], "bar")
 
   def test_dont_find_word3 (self):
-    result = expand_region_handler.expand_to_word("foo.bar", 5, 5);
+    result = expand_to_word.expand_to_word("foo.bar", 5, 5);
     self.assertEqual(result["start"], 4)
     self.assertEqual(result["end"], 7)
     self.assertEqual(result["string"], "bar")
 
   def test_dont_find_word3_and_dont_hang (self):
-    result = expand_region_handler.expand_to_word("aaa", 0, 3);
+    result = expand_to_word.expand_to_word("aaa", 0, 3);
     self.assertEqual(result, None)
 
 
 class WordWithDotsTest(unittest.TestCase):
   def test (self):
-    result = expand_region_handler.expand_to_word_with_dots("foo.bar", 6, 7);
+    result = expand_to_word_with_dots.expand_to_word_with_dots("foo.bar", 6, 7);
     self.assertEqual(result["start"], 0)
     self.assertEqual(result["end"], 7)
     self.assertEqual(result["string"], "foo.bar")
@@ -80,35 +96,35 @@ class LineTest(unittest.TestCase):
       self.string2 = myfile.read()
 
   def test_with_spaces_at_beginning (self):
-    result = expand_region_handler.expand_to_line(self.string1, 10, 16);
+    result = expand_to_line.expand_to_line(self.string1, 10, 16);
     self.assertEqual(result["string"], "is it me")
     self.assertEqual(result["start"], 10)
     self.assertEqual(result["end"], 18)
 
   def test_existing_line_selection (self):
-    result = expand_region_handler.expand_to_line(self.string1, 10, 18);
+    result = expand_to_line.expand_to_line(self.string1, 10, 18);
     self.assertEqual(result, None)
 
   def test_with_no_spaces_or_tabs_at_beginning (self):
-    result = expand_region_handler.expand_to_line(self.string2, 6, 12);
+    result = expand_to_line.expand_to_line(self.string2, 6, 12);
     self.assertEqual(result["string"], "is it me")
     self.assertEqual(result["start"], 6)
     self.assertEqual(result["end"], 14)
 
   def test_with_indention (self):
-    result = expand_region_handler.expand_to_line(" aa", 0, 0);
+    result = expand_to_line.expand_to_line(" aa", 0, 0);
     self.assertEqual(result["string"], " aa")
     self.assertEqual(result["start"], 0)
     self.assertEqual(result["end"], 3)
 
   def test_without_indention (self):
-    result = expand_region_handler.expand_to_line(" aa", 1, 1);
+    result = expand_to_line.expand_to_line(" aa", 1, 1);
     self.assertEqual(result["string"], "aa")
     self.assertEqual(result["start"], 1)
     self.assertEqual(result["end"], 3)
 
   def test_with_indention2 (self):
-    result = expand_region_handler.expand_to_line("  aa", 1, 1);
+    result = expand_to_line.expand_to_line("  aa", 1, 1);
     self.assertEqual(result["string"], "  aa")
     self.assertEqual(result["start"], 0)
     self.assertEqual(result["end"], 4)
@@ -122,35 +138,35 @@ class QuoteTest(unittest.TestCase):
       self.string2 = myfile.read()
 
   def test_double_quotes_inner (self):
-    result = expand_region_handler.expand_to_quotes(self.string1, 6, 12);
+    result = expand_to_quotes.expand_to_quotes(self.string1, 6, 12);
     self.assertEqual(result["start"], 1)
     self.assertEqual(result["end"], 12)
     self.assertEqual(result["string"], "test string")
 
   def test_double_quotes_outer (self):
-    result = expand_region_handler.expand_to_quotes(self.string1, 1, 12);
+    result = expand_to_quotes.expand_to_quotes(self.string1, 1, 12);
     self.assertEqual(result["start"], 0)
     self.assertEqual(result["end"], 13)
     self.assertEqual(result["string"], "\"test string\"")
 
   def test_single_quotes_inner (self):
-    result = expand_region_handler.expand_to_quotes(self.string2, 6, 12);
+    result = expand_to_quotes.expand_to_quotes(self.string2, 6, 12);
     self.assertEqual(result["start"], 1)
     self.assertEqual(result["end"], 12)
     self.assertEqual(result["string"], "test string")
 
   def test_single_quotes_outer (self):
-    result = expand_region_handler.expand_to_quotes(self.string2, 1, 12);
+    result = expand_to_quotes.expand_to_quotes(self.string2, 1, 12);
     self.assertEqual(result["start"], 0)
     self.assertEqual(result["end"], 13)
     self.assertEqual(result["string"], "'test string'")
 
   def test_should_not_find1 (self):
-    result = expand_region_handler.expand_to_quotes(" ': '", 1, 1);
+    result = expand_to_quotes.expand_to_quotes(" ': '", 1, 1);
     self.assertEqual(result, None)
 
   def test_should_not_find2 (self):
-    result = expand_region_handler.expand_to_quotes("': '", 4, 4);
+    result = expand_to_quotes.expand_to_quotes("': '", 4, 4);
     self.assertEqual(result, None)
 
 
@@ -162,27 +178,27 @@ class TrimTest(unittest.TestCase):
       self.string2 = myfile.read()
 
   def test_1 (self):
-    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd("  aa  ");
+    result = expand_to_semantic_unit.trimSpacesAndTabsOnStartAndEnd("  aa  ");
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 4)
 
   def test_2 (self):
-    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd("  'a a'  ");
+    result = expand_to_semantic_unit.trimSpacesAndTabsOnStartAndEnd("  'a a'  ");
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 7)
 
   def test_3 (self):
-    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd(self.string1);
+    result = expand_to_semantic_unit.trimSpacesAndTabsOnStartAndEnd(self.string1);
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 11)
 
   def test_4 (self):
-    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd(" foo.bar['property'].getX()");
+    result = expand_to_semantic_unit.trimSpacesAndTabsOnStartAndEnd(" foo.bar['property'].getX()");
     self.assertEqual(result["start"], 1)
     self.assertEqual(result["end"], 27)
 
   def test_5 (self):
-    result = expand_region_handler.trimSpacesAndTabsOnStartAndEnd(self.string2);
+    result = expand_to_semantic_unit.trimSpacesAndTabsOnStartAndEnd(self.string2);
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 49)
 
@@ -208,75 +224,75 @@ class SemanticUnit(unittest.TestCase):
       self.string9 = myfile.read()
 
   def test_1 (self):
-    result = expand_region_handler.expand_to_semantic_unit(self.string1, 13, 13);
+    result = expand_to_semantic_unit.expand_to_semantic_unit(self.string1, 13, 13);
     self.assertEqual(result["string"], "foo.bar['property'].getX()")
     self.assertEqual(result["start"], 7)
     self.assertEqual(result["end"], 33)
 
   def test_2 (self):
-    result = expand_region_handler.expand_to_semantic_unit(self.string2, 13, 13);
+    result = expand_to_semantic_unit.expand_to_semantic_unit(self.string2, 13, 13);
     self.assertEqual(result["string"], "foo.bar['prop,erty'].getX()")
     self.assertEqual(result["start"], 7)
     self.assertEqual(result["end"], 34)
 
   def test_3 (self):
-    result = expand_region_handler.expand_to_semantic_unit(self.string3, 13, 13);
+    result = expand_to_semantic_unit.expand_to_semantic_unit(self.string3, 13, 13);
     self.assertEqual(result["string"], "foo.bar['property'].getX()")
     self.assertEqual(result["start"], 13)
     self.assertEqual(result["end"], 39)
 
   def test_4 (self):
-    result = expand_region_handler.expand_to_semantic_unit(self.string4, 11, 11);
+    result = expand_to_semantic_unit.expand_to_semantic_unit(self.string4, 11, 11);
     self.assertEqual(result["start"], 7)
     self.assertEqual(result["end"], 51)
 
   def test_5 (self):
-    result = expand_region_handler.expand_to_semantic_unit(self.string4, 6, 52);
+    result = expand_to_semantic_unit.expand_to_semantic_unit(self.string4, 6, 52);
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 52)
 
   def test_6 (self):
-    result = expand_region_handler.expand_to_semantic_unit(self.string5, 15, 15);
+    result = expand_to_semantic_unit.expand_to_semantic_unit(self.string5, 15, 15);
     self.assertEqual(result["string"], "o.getData(\"bar\")")
     self.assertEqual(result["start"], 8)
     self.assertEqual(result["end"], 24)
 
   def test_7 (self):
-    result = expand_region_handler.expand_to_semantic_unit("if (foo.get('a') && bar.get('b')) {", 6, 6);
+    result = expand_to_semantic_unit.expand_to_semantic_unit("if (foo.get('a') && bar.get('b')) {", 6, 6);
     self.assertEqual(result["string"], "foo.get('a')")
     self.assertEqual(result["start"], 4)
     self.assertEqual(result["end"], 16)
 
   def test_8 (self):
-    result = expand_region_handler.expand_to_semantic_unit("if (foo.get('a') || bar.get('b')) {", 6, 6);
+    result = expand_to_semantic_unit.expand_to_semantic_unit("if (foo.get('a') || bar.get('b')) {", 6, 6);
     self.assertEqual(result["string"], "foo.get('a')")
     self.assertEqual(result["start"], 4)
     self.assertEqual(result["end"], 16)
 
   def test_9 (self):
-    result = expand_region_handler.expand_to_semantic_unit(self.string9, 0, 14);
+    result = expand_to_semantic_unit.expand_to_semantic_unit(self.string9, 0, 14);
     self.assertEqual(result["string"], "if(foo || bar) {\n}")
     self.assertEqual(result["start"], 0)
     self.assertEqual(result["end"], 18)
 
   def test_should_none (self):
-    result = expand_region_handler.expand_to_semantic_unit("aaa", 1, 1);
+    result = expand_to_semantic_unit.expand_to_semantic_unit("aaa", 1, 1);
     self.assertEqual(result, None)
 
   def test_should_none_2 (self):
-    result = expand_region_handler.expand_to_semantic_unit(self.string6, 6, 23);
+    result = expand_to_semantic_unit.expand_to_semantic_unit(self.string6, 6, 23);
     self.assertEqual(result, None)
 
   def test_should_none_3 (self):
-    result = expand_region_handler.expand_to_semantic_unit(self.string7, 17, 33);
+    result = expand_to_semantic_unit.expand_to_semantic_unit(self.string7, 17, 33);
     self.assertEqual(result, None)
 
   def test_should_none_4 (self):
-    result = expand_region_handler.expand_to_semantic_unit(self.string8, 16, 16);
+    result = expand_to_semantic_unit.expand_to_semantic_unit(self.string8, 16, 16);
     self.assertEqual(result, None)
 
   def test_should_none_5 (self):
-    result = expand_region_handler.expand_to_semantic_unit("aa || bb", 3, 3);
+    result = expand_to_semantic_unit.expand_to_semantic_unit("aa || bb", 3, 3);
     self.assertEqual(result, None)
 
 
@@ -288,27 +304,27 @@ class SymbolTest(unittest.TestCase):
       self.string2 = myfile.read()
 
   def test_symbol_inner (self):
-    result = expand_region_handler.expand_to_symbols(self.string1, 7, 10);
+    result = expand_to_symbols.expand_to_symbols(self.string1, 7, 10);
     self.assertEqual(result["start"], 1)
     self.assertEqual(result["end"], 10)
     self.assertEqual(result["string"], "foo - bar")
 
   def test_symbol_outer (self):
-    result = expand_region_handler.expand_to_symbols(self.string1, 1, 10);
+    result = expand_to_symbols.expand_to_symbols(self.string1, 1, 10);
     self.assertEqual(result["start"], 0)
     self.assertEqual(result["end"], 11)
     self.assertEqual(result["string"], "(foo - bar)")
 
   def test_look_back_dont_hang (self):
-    result = expand_region_handler.expand_to_symbols("   ", 1, 2);
+    result = expand_to_symbols.expand_to_symbols("   ", 1, 2);
     self.assertEqual(result, None)
 
   def test_look_ahead_dont_hang (self):
-    result = expand_region_handler.expand_to_symbols("(   ", 2, 2);
+    result = expand_to_symbols.expand_to_symbols("(   ", 2, 2);
     self.assertEqual(result, None)
 
   def test_fix_look_back (self):
-    result = expand_region_handler.expand_to_symbols(self.string2, 32, 32);
+    result = expand_to_symbols.expand_to_symbols(self.string2, 32, 32);
     self.assertEqual(result["start"], 12)
     self.assertEqual(result["end"], 35)
     self.assertEqual(result["string"], "foo.indexOf('bar') > -1")
