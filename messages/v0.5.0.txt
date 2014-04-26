@@ -1,0 +1,20 @@
+
+
+
+UPDATE TIME!
+
+Welcome to ExpandRegion for Sublime Text v0.5.0
+
+
+
+
+
+New:
+
+- HTML support
+
+
+
+Feedback and bugs?
+
+  -> https://github.com/aronwoost/sublime-expand-region/issues
