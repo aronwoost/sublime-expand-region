@@ -3,10 +3,10 @@ try:
 except:
   from . import utils
 
-def _expand_to_regex_rule(string, startIndex, endIndex, negativeRe, positiveRe, type):
+def _expand_to_regex_rule(string, startIndex, endIndex, regex, type):
   if(startIndex != endIndex):
     selection = string[startIndex:endIndex]
-    if positiveRe.match(selection) is None:
+    if regex.match(selection) is None:
       return None
 
   # look back
@@ -18,7 +18,7 @@ def _expand_to_regex_rule(string, startIndex, endIndex, negativeRe, positiveRe, 
       break
     char = string[searchIndex:searchIndex+1]
     # character found, that does not fit into the search set 
-    if negativeRe.match(char) is None:
+    if regex.match(char) is None:
       newStartIndex = searchIndex + 1
       break
     else:
@@ -33,7 +33,7 @@ def _expand_to_regex_rule(string, startIndex, endIndex, negativeRe, positiveRe, 
       break
     char = string[searchIndex:searchIndex+1]
     # character found, that does not fit into the search set 
-    if negativeRe.match(char) is None:
+    if regex.match(char) is None:
       newEndIndex = searchIndex
       break
     else:
