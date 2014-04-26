@@ -9,6 +9,7 @@ try:
   import expand_to_quotes
   import expand_to_line
   import expand_to_semantic_unit
+  import expand_to_xml_node
   import utils
 except:
   from . import get_line
@@ -19,6 +20,7 @@ except:
   from . import expand_to_quotes
   from . import expand_to_line
   from . import expand_to_semantic_unit
+  from . import expand_to_xml_node
   from . import utils
 
 class LinebreaksTest(unittest.TestCase):
@@ -207,6 +209,7 @@ class TrimTest(unittest.TestCase):
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 49)
 
+
 class SemanticUnit(unittest.TestCase):
   def setUp(self):
     with open ("test/semantic_unit_01.txt", "r") as myfile:
@@ -334,7 +337,83 @@ class SymbolTest(unittest.TestCase):
     self.assertEqual(result["end"], 35)
     self.assertEqual(result["string"], "foo.indexOf('bar') > -1")
 
-class IntegrationTest(unittest.TestCase):
+
+class XmlHelperTest(unittest.TestCase):
+  def test_within_node_true (self):
+    result = expand_to_xml_node.is_within_tag("<input>", 2, 2)
+    self.assertEqual(result["start"], 0)
+    self.assertEqual(result["end"], 7)
+
+  def test_within_node_false1 (self):
+    result = expand_to_xml_node.is_within_tag(">input<", 2, 2)
+    self.assertEqual(result, False)
+
+  def test_within_node_false2 (self):
+    result = expand_to_xml_node.is_within_tag("input", 2, 2)
+    self.assertEqual(result, False)
+
+  def test_get_tag_name1 (self):
+    result = expand_to_xml_node.get_tag_properties("<input class='test'>")
+    self.assertEqual(result["name"], "input")
+
+  def test_get_tag_name2 (self):
+    result = expand_to_xml_node.get_tag_properties("< input class='test'>")
+    self.assertEqual(result["name"], "input")
+
+  def test_get_tag_name3 (self):
+    result = expand_to_xml_node.get_tag_properties("<  input class='test'>")
+    self.assertEqual(result["name"], "input")
+
+  def test_get_tag_name4 (self):
+    result = expand_to_xml_node.get_tag_properties("<input>")
+    self.assertEqual(result["name"], "input")
+
+  def test_get_tag_name5 (self):
+    result = expand_to_xml_node.get_tag_properties("</input>")
+    self.assertEqual(result["name"], "input")
+    self.assertEqual(result["is_closing_tag"], True)
+
+  def test_sanitize_tag1 (self):
+    result = expand_to_xml_node.sanitize_tag_chars("<div>")
+    self.assertEqual(result, "<>")
+
+  def test_sanitize_tag2 (self):
+    result = expand_to_xml_node.sanitize_tag_chars("<div style='color: red;'>")
+    self.assertEqual(result, "<>")
+
+  def test_sanitize_tag3 (self):
+    result = expand_to_xml_node.sanitize_tag_chars("</div>")
+    self.assertEqual(result, "</>")
+
+  def test_get_closing_tag1 (self):
+    result = expand_to_xml_node.get_closing_tag("<div><div>test</div></div>", "div")
+    self.assertEqual(result["start"], 20)
+    self.assertEqual(result["end"], 26)
+
+  def test_get_closing_tag2 (self):
+    result = expand_to_xml_node.get_closing_tag("<div style='color: red;'>test</div>", "div")
+    self.assertEqual(result["start"], 29)
+    self.assertEqual(result["end"], 35)
+
+  def test_get_opening_tag1 (self):
+    result = expand_to_xml_node.get_opening_tag("  <div><div>test</div></div>", "div")
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 7)
+
+  def test_find_previous_open_tag1 (self):
+    result = expand_to_xml_node.find_parent_open_tag("<div></div><div><a href='#'></a>")
+    self.assertEqual(result["start"], 11)
+    self.assertEqual(result["end"], 16)
+    self.assertEqual(result["name"], "div")
+
+  def test_find_previous_open_tag2 (self):
+    result = expand_to_xml_node.find_parent_open_tag("<div></div><div style='color: red;'><a href='#'></a>")
+    self.assertEqual(result["start"], 11)
+    self.assertEqual(result["end"], 36)
+    self.assertEqual(result["name"], "div")
+
+
+class JavascriptIntegrationTest(unittest.TestCase):
   def setUp(self):
     with open ("test/integration_01.txt", "r") as myfile:
       self.string1 = myfile.read()
@@ -413,6 +492,37 @@ class IntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 42)
     self.assertEqual(result["type"], "symbol")
     self.assertEqual(result["expand_stack"], ["semantic_unit", "symbols"])
+
+
+class HtmlIntegrationTest(unittest.TestCase):
+  def setUp(self):
+    with open ("test/html_01.txt", "r") as myfile:
+      self.string1 = myfile.read()
+
+  def test_expand_to_complete_node1 (self):
+    result = expand_region_handler.expand("  <div>test</div>", 3, 6, "html")
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 17)
+
+  def test_expand_to_complete_node2 (self):
+    result = expand_region_handler.expand(self.string1, 11, 15, "html")
+    self.assertEqual(result["start"], 8)
+    self.assertEqual(result["end"], 172)
+
+  def test_expand_to_complete_node3 (self):
+    result = expand_region_handler.expand(self.string1, 162, 164, "html")
+    self.assertEqual(result["start"], 152)
+    self.assertEqual(result["end"], 165)
+
+  def test_expand_to_content_of_parent_node1 (self):
+    result = expand_region_handler.expand(self.string1, 147, 147, "html")
+    self.assertEqual(result["start"], 20)
+    self.assertEqual(result["end"], 168)
+
+  def test_expand_to_content_of_parent_node2 (self):
+    result = expand_region_handler.expand(self.string1, 20, 168, "html")
+    self.assertEqual(result["start"], 8)
+    self.assertEqual(result["end"], 172)
 
 # def suite():
   # unittest.makeSuite(WordTest, "test")

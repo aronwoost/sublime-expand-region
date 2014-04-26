@@ -1,0 +1,7 @@
+<div>
+  <a href="#">
+    <img width="300" height="160" src="img/fupa_2_bo0bqv.jpg" class="light-background"/>
+    <h6 class="tagline">Produkte</h6>
+    <h3>test</h3>
+  </a>
+</div>

@@ -7,7 +7,7 @@ except:
 
 def expand(string, start, end, extension=None):
 
-  if(extension == "html"):
+  if(extension in ["html", "htm", "xml"]):
     return html.expand(string, start, end)
 
   return javascript.expand(string, start, end)
