@@ -48,6 +48,8 @@ class WordTest(unittest.TestCase):
   def setUp(self):
     with open ("test/word_01.txt", "r") as myfile:
       self.string1 = myfile.read()
+    with open ("test/word_02.txt", "r") as myfile:
+      self.string2 = myfile.read()
 
   def test_word_with_whitespaces_around (self):
     result = expand_to_word.expand_to_word(" hello ", 3, 3);
@@ -79,6 +81,9 @@ class WordTest(unittest.TestCase):
     result = expand_to_word.expand_to_word("aaa", 0, 3);
     self.assertEqual(result, None)
 
+  def test_find_word_dont_include_linebreak (self):
+    result = expand_to_word.expand_to_word(self.string2, 0, 0);
+    self.assertEqual(result, None)
 
 class WordWithDotsTest(unittest.TestCase):
   def test (self):
