@@ -1,5 +1,3 @@
-import re
-
 try:
   import get_line
   import expand_to_word
