@@ -71,6 +71,12 @@ class WordTest(unittest.TestCase):
     self.assertEqual(result["end"], 3)
     self.assertEqual(result["string"], "bar")
 
+  def test_find_word_when_parts_of_the_word_are_already_selected (self):
+    result = expand_to_word.expand_to_word("hello", 1, 4);
+    self.assertEqual(result["start"], 0)
+    self.assertEqual(result["end"], 5)
+    self.assertEqual(result["string"], "hello")
+
   def test_dont_find_word1 (self):
     result = expand_to_word.expand_to_word(self.string1, 1, 10);
     self.assertEqual(result, None)

@@ -4,9 +4,12 @@ except:
   from . import utils
 
 def _expand_to_regex_rule(string, startIndex, endIndex, regex, type):
+  # if there is a selection (and not only a blinking cursor)
   if(startIndex != endIndex):
     selection = string[startIndex:endIndex]
-    if regex.match(selection) is None:
+    # make sure, that every character of the selection meets the regex rules,
+    # if not return here
+    if len(regex.findall(selection)) != len(selection):
       return None
 
   # look back
