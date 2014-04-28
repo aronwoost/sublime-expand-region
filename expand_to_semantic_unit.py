@@ -70,7 +70,7 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
     searchIndex += 1
 
   s = string[newStartIndex:newEndIndex]
-  trimResult = trimSpacesAndTabsOnStartAndEnd(s)
+  trimResult = utils.trimSpacesAndTabsOnStartAndEnd(s)
   if trimResult:
     newStartIndex = newStartIndex + trimResult["start"];
     newEndIndex = newEndIndex - (len(s) - trimResult["end"]);
@@ -84,14 +84,4 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
 
     return utils.create_return_obj(newStartIndex, newEndIndex, string, "semantic_unit")
   except NameError:
-    return None
-
-
-def trimSpacesAndTabsOnStartAndEnd(string):
-  trim = re.compile(r'^[ \t\n]*(.*?)[ \t\n]*$', re.DOTALL)
-  r = trim.search(string)
-
-  if r:
-    return {"start": r.start(1), "end": r.end(1)}
-  else:
     return None

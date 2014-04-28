@@ -1,5 +1,4 @@
 try:
-  import get_line
   import expand_to_word
   import expand_to_word_with_dots
   import expand_to_symbols
@@ -7,7 +6,6 @@ try:
   import expand_to_semantic_unit
   import utils
 except:
-  from . import get_line
   from . import expand_to_word
   from . import expand_to_word_with_dots
   from . import expand_to_symbols
@@ -19,7 +17,7 @@ def expand(string, start, end):
 
   if utils.selection_contain_linebreaks(string, start, end) == False:
 
-    line = get_line.get_line(string, start, end)
+    line = utils.get_line(string, start, end)
     lineString = string[line["start"]:line["end"]]
 
     lineResult = expand_agains_line(lineString, start - line["start"], end - line["start"])
