@@ -42,7 +42,8 @@ def get_line(string, startIndex, endIndex):
 
   return {"start": newStartIndex, "end": newEndIndex}
 
-def trimSpacesAndTabsOnStartAndEnd(string):
+def trim(string):
+  # TODO can s.strip() be used for that?
   trim = re.compile(r'^[ \t\n]*(.*?)[ \t\n]*$', re.DOTALL)
   r = trim.search(string)
 

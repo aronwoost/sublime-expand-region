@@ -70,7 +70,7 @@ def expand_to_semantic_unit(string, startIndex, endIndex):
     searchIndex += 1
 
   s = string[newStartIndex:newEndIndex]
-  trimResult = utils.trimSpacesAndTabsOnStartAndEnd(s)
+  trimResult = utils.trim(s)
   if trimResult:
     newStartIndex = newStartIndex + trimResult["start"];
     newEndIndex = newEndIndex - (len(s) - trimResult["end"]);

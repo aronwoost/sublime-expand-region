@@ -39,27 +39,27 @@ class TrimTest(unittest.TestCase):
       self.string2 = myfile.read()
 
   def test_1 (self):
-    result = trimSpacesAndTabsOnStartAndEnd("  aa  ");
+    result = trim("  aa  ");
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 4)
 
   def test_2 (self):
-    result = trimSpacesAndTabsOnStartAndEnd("  'a a'  ");
+    result = trim("  'a a'  ");
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 7)
 
   def test_3 (self):
-    result = trimSpacesAndTabsOnStartAndEnd(self.string1);
+    result = trim(self.string1);
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 11)
 
   def test_4 (self):
-    result = trimSpacesAndTabsOnStartAndEnd(" foo.bar['property'].getX()");
+    result = trim(" foo.bar['property'].getX()");
     self.assertEqual(result["start"], 1)
     self.assertEqual(result["end"], 27)
 
   def test_5 (self):
-    result = trimSpacesAndTabsOnStartAndEnd(self.string2);
+    result = trim(self.string2);
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 49)
 
