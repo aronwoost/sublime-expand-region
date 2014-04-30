@@ -50,18 +50,18 @@ class XmlHelperTest(unittest.TestCase):
     result = sanitize_tag_chars("</div>")
     self.assertEqual(result, "</>")
 
-  def test_get_closing_tag1 (self):
-    result = get_closing_tag("<div><div>test</div></div>", "div")
+  def test_find_closing_tag1 (self):
+    result = find_closing_tag("<div><div>test</div></div>", "div")
     self.assertEqual(result["start"], 20)
     self.assertEqual(result["end"], 26)
 
-  def test_get_closing_tag2 (self):
-    result = get_closing_tag("<div style='color: red;'>test</div>", "div")
+  def test_find_closing_tag2 (self):
+    result = find_closing_tag("<div style='color: red;'>test</div>", "div")
     self.assertEqual(result["start"], 29)
     self.assertEqual(result["end"], 35)
 
-  def test_get_opening_tag1 (self):
-    result = get_opening_tag("  <div><div>test</div></div>", "div")
+  def test_find_opening_tag1 (self):
+    result = find_opening_tag("  <div><div>test</div></div>", "div")
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 7)
 

@@ -18,12 +18,12 @@ def expand_to_xml_node(string, start, end):
     # if it's a closing tag, find opening tag and return prositions
     if(getTagNameResult["has_closing_slash"]):
       stringStartToTagEnd = string[0:is_within_tag_result["end"]]
-      openingTagPosition = get_opening_tag(stringStartToTagEnd, tagName)
+      openingTagPosition = find_opening_tag(stringStartToTagEnd, tagName)
       return utils.create_return_obj(openingTagPosition["start"], is_within_tag_result["end"], string, "complete_node")
     # if it's a opening tag, find opening tag and return prositions
     else:
       stringNodeStartToStringEnd = string[is_within_tag_result["start"]:]
-      closingTagPosition = get_closing_tag(stringNodeStartToStringEnd, tagName)
+      closingTagPosition = find_closing_tag(stringNodeStartToStringEnd, tagName)
       return utils.create_return_obj(is_within_tag_result["start"], is_within_tag_result["start"] + closingTagPosition["end"], string, "complete_node")
 
   # expand selection to the "parent" node of the current selection
@@ -32,7 +32,7 @@ def expand_to_xml_node(string, start, end):
   if(parent_opening_tag):
     # find closing tag
     stringNodeStartToStringEnd = string[parent_opening_tag["start"]:]
-    closingTagPosition = get_closing_tag(stringNodeStartToStringEnd, parent_opening_tag["name"])
+    closingTagPosition = find_closing_tag(stringNodeStartToStringEnd, parent_opening_tag["name"])
 
     # set positions to content of node, w/o the node tags
     newStart = parent_opening_tag["end"]
@@ -80,14 +80,15 @@ def is_within_tag(string, startIndex, endIndex):
       return False
     searchIndex += 1
 
+# returns tag name and if tag has a closing slash
 def get_tag_properties(string):
   regex = re.compile("<[\s]*(\/*)(.*?)[>|\s]")
 
   result = regex.match(string)
   return {"name": result.group(2), "has_closing_slash": result.group(1) == "/"}
 
-def get_closing_tag(string, node_name):
-  regexString = "<\s*" + node_name + "(?:.*?)>|<\/\s*" + node_name + "\s*>"
+def find_closing_tag(string, tag_name):
+  regexString = "<\s*" + tag_name + "(?:.*?)>|<\/\s*" + tag_name + "\s*>"
   regex = re.compile(regexString)
 
   opening = "<>"
@@ -105,8 +106,8 @@ def get_closing_tag(string, node_name):
     if(len(symbolStack) == 0):
       return {"start": m.start(), "end": m.end()}
 
-def get_opening_tag(string, node_name):
-  regexString = "<\s*" + node_name + "(?:.*?)>|<\/\s*" + node_name + "\s*>"
+def find_opening_tag(string, tag_name):
+  regexString = "<\s*" + tag_name + "(?:.*?)>|<\/\s*" + tag_name + "\s*>"
   regex = re.compile(regexString)
 
   opening = "<>"
