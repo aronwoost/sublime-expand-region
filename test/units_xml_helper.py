@@ -36,7 +36,7 @@ class XmlHelperTest(unittest.TestCase):
   def test_get_tag_name5 (self):
     result = get_tag_properties("</input>")
     self.assertEqual(result["name"], "input")
-    self.assertEqual(result["is_closing_tag"], True)
+    self.assertEqual(result["has_closing_slash"], True)
 
   def test_sanitize_tag1 (self):
     result = sanitize_tag_chars("<div>")

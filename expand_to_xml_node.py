@@ -16,7 +16,7 @@ def expand_to_xml_node(string, start, end):
     getTagNameResult = get_tag_properties(tagString)
     tagName = getTagNameResult["name"]
     # if it's a closing tag, find opening tag and return prositions
-    if(getTagNameResult["is_closing_tag"]):
+    if(getTagNameResult["has_closing_slash"]):
       stringStartToTagEnd = string[0:is_within_tag_result["end"]]
       openingTagPosition = get_opening_tag(stringStartToTagEnd, tagName)
       return utils.create_return_obj(openingTagPosition["start"], is_within_tag_result["end"], string, "complete_node")
@@ -84,7 +84,7 @@ def get_tag_properties(string):
   regex = re.compile("<[\s]*(\/*)(.*?)[>|\s]")
 
   result = regex.match(string)
-  return {"name": result.group(2), "is_closing_tag": result.group(1) == "/"}
+  return {"name": result.group(2), "has_closing_slash": result.group(1) == "/"}
 
 def get_closing_tag(string, node_name):
   regexString = "<\s*" + node_name + "(?:.*?)>|<\/\s*" + node_name + "\s*>"
