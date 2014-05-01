@@ -51,28 +51,28 @@ class XmlHelperTest(unittest.TestCase):
     self.assertEqual(result, "</>")
 
   def test_find_closing_tag1 (self):
-    result = find_closing_tag("<div><div>test</div></div>", "div")
-    self.assertEqual(result["start"], 20)
-    self.assertEqual(result["end"], 26)
+    result = find_tag("<div>test</div></div>", "forward", "div")
+    self.assertEqual(result["start"], 15)
+    self.assertEqual(result["end"], 21)
 
   def test_find_closing_tag2 (self):
-    result = find_closing_tag("<div style='color: red;'>test</div>", "div")
-    self.assertEqual(result["start"], 29)
-    self.assertEqual(result["end"], 35)
+    result = find_tag("test</div>", "forward", "div")
+    self.assertEqual(result["start"], 4)
+    self.assertEqual(result["end"], 10)
 
   def test_find_opening_tag1 (self):
-    result = find_opening_tag("  <div><div>test</div></div>", "div")
+    result = find_tag("  <div><div>test</div>", "backward", "div")
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 7)
 
   def test_find_previous_open_tag1 (self):
-    result = find_parent_open_tag("<div></div><div><a href='#'></a>")
+    result = find_tag("<div></div><div><a href='#'></a>", "backward")
     self.assertEqual(result["start"], 11)
     self.assertEqual(result["end"], 16)
     self.assertEqual(result["name"], "div")
 
   def test_find_previous_open_tag2 (self):
-    result = find_parent_open_tag("<div></div><div style='color: red;'><a href='#'></a>")
+    result = find_tag("<div></div><div style='color: red;'><a href='#'></a>", "backward")
     self.assertEqual(result["start"], 11)
     self.assertEqual(result["end"], 36)
     self.assertEqual(result["name"], "div")
