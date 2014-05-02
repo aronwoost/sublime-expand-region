@@ -33,5 +33,16 @@ class HtmlIntegrationTest(unittest.TestCase):
     result = expand(self.string1, 20, 168, "html")
     self.assertEqual(result["start"], 8)
     self.assertEqual(result["end"], 172)
+
+  def test_expand_to_self_closing_node1 (self):
+    result = expand("<input value='test'>", 1, 6, "html")
+    self.assertEqual(result["start"], 0)
+    self.assertEqual(result["end"], 20)
+
+  def test_expand_to_self_closing_node2 (self):
+    result = expand("<magic value='test' />", 1, 6, "html")
+    self.assertEqual(result["start"], 0)
+    self.assertEqual(result["end"], 22)
+
 if __name__ == "__main__":
   unittest.main()

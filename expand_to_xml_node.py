@@ -16,10 +16,13 @@ def expand_to_xml_node(string, start, end):
     getTagNameResult = get_tag_properties(tagString)
     tagName = getTagNameResult["name"]
     # if it's a closing tag, find opening tag and return positions
-    if(getTagNameResult["has_closing_slash"]):
+    if(getTagNameResult["type"] == "closing"):
       stringStartToTagStart = string[0:is_within_tag_result["start"]]
       openingTagPosition = find_tag(stringStartToTagStart, "backward", tagName)
       return utils.create_return_obj(openingTagPosition["start"], is_within_tag_result["end"], string, "complete_node")
+    # it's self closing, just use it, no need to look further
+    elif(getTagNameResult["type"] == "self_closing"):
+      return utils.create_return_obj(is_within_tag_result["start"], is_within_tag_result["end"], string, "complete_node")
     # if it's a opening tag, find opening tag and return positions
     else:
       stringNodeEndToStringEnd = string[is_within_tag_result["end"]:]
@@ -82,10 +85,23 @@ def is_within_tag(string, startIndex, endIndex):
 
 # returns tag name and if tag has a closing slash
 def get_tag_properties(string):
-  regex = re.compile("<[\s]*(\/*)(.*?)[>|\s]")
-
+  regex = re.compile("<\s*(\/*)\s*(\S*)(?:.*?)(\/*)\s*>")
   result = regex.match(string)
-  return {"name": result.group(2), "has_closing_slash": result.group(1) == "/"}
+
+  tag_name = result.group(2)
+
+  void_elements = ["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "meta", "param", "source", "track", "wbr"]
+
+  if(result.group(1) == "/"):
+    tag_type = "closing"
+  elif(result.group(3) == "/"):
+    tag_type = "self_closing"
+  elif(tag_name in void_elements):
+    tag_type = "self_closing"
+  else:
+    tag_type = "opening"
+
+  return {"name": result.group(2), "type": tag_type}
 
 def find_tag(string, direction, tag_name=""):
   # search for opening and closing tag with a tag_name. If tag_name = "", search
@@ -95,9 +111,9 @@ def find_tag(string, direction, tag_name=""):
   
   # direction == "forward" implies that we are looking for closing tags (and
   # vice versa
-  target_tag_type = (direction == "forward" and "</>" or "<>")
+  target_tag_type = (direction == "forward" and "closing" or "opening")
   # set counterpart
-  target_tag_type_counterpart = (direction == "forward" and "<>" or "</>")
+  target_tag_type_counterpart = (direction == "forward" and "opening" or "closing")
 
   # found tags will be added/removed from the stack to eliminate complete nodes
   # (opening tag + closing tag).
@@ -110,16 +126,10 @@ def find_tag(string, direction, tag_name=""):
     result.reverse()
 
   for m in result:
-    # get only "<>" and "</>" 
-    tag = sanitize_tag_chars(m.group())
-    if(tag == target_tag_type):
+    tag_type = get_tag_properties(m.group())["type"]
+    if(tag_type == target_tag_type):
       if(len(symbolStack) == 0):
         return {"start": m.start(), "end": m.end(), "name": get_tag_properties(m.group())["name"]}
       symbolStack.pop()
-    elif(tag == target_tag_type_counterpart):
-      symbolStack.append(tag)
-
-def sanitize_tag_chars(string):
-  regex = re.compile("<|>|\/")
-  result = regex.findall(string)
-  return "".join(result)
+    elif(tag_type == target_tag_type_counterpart):
+      symbolStack.append(tag_type)
