@@ -8,6 +8,7 @@ except:
 def expand_to_quotes(string, startIndex, endIndex):
   quotesRe = re.compile(r'([\'"])(?:\1|.*?[^\\]\1)')
 
+  # iterate over all found quotes pairs
   for match in re.finditer(quotesRe, string):
     start = match.start(0)
     end = match.end(0)
@@ -18,6 +19,7 @@ def expand_to_quotes(string, startIndex, endIndex):
     if(startIndex == start and endIndex == end):
       return None
 
+    # current selection is within the found quote pairs
     if(startIndex > start and endIndex < end):
       if(startIndex == start + 1 and endIndex == end - 1):
         if(startIndex == start and endIndex == end):
