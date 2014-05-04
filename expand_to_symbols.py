@@ -5,10 +5,10 @@ try:
 except:
   from . import utils
 
-def expand_to_symbols(string, startIndex, endIndex):
-  openingSymbols = "([{";
-  closingSymbols = ")]}";
-  symbolsRe = re.compile(r'(['+re.escape(openingSymbols + closingSymbols)+'])')
+def expand_to_symbols(string, selection_start, selection_end):
+  opening_symbols = "([{";
+  closing_symbols = ")]}";
+  symbols_regex = re.compile("[" + re.escape(opening_symbols + closing_symbols)+"]")
 
   counterparts = {
     "(":")",
@@ -19,56 +19,62 @@ def expand_to_symbols(string, startIndex, endIndex):
     "]":"["
   }
 
-  symbolStack = []
+  symbol_stack = []
 
-  searchIndex = startIndex - 1;
+  search_index = selection_start - 1;
   while True:
-    if(searchIndex < 0):
+    # begin of string reached
+    if(search_index < 0):
       return None
-    char = string[searchIndex:searchIndex+1]
-    result = symbolsRe.match(char)
+
+    character = string[search_index:search_index + 1]
+    result = symbols_regex.match(character)
+
     if result:
       symbol = result.group()
-      if(symbol in openingSymbols and len(symbolStack) == 0):
-        newStartIndex = searchIndex + 1
+
+      # symbol is opening symbol and stack is empty, we found the symbol we want to expand to
+      if(symbol in opening_symbols and len(symbol_stack) == 0):
+        symbols_start = search_index + 1
         break
+
+      if len(symbol_stack) > 0 and symbol_stack[len(symbol_stack) - 1] == counterparts[symbol]:
+        # last symbol in the stack is the counterpart of the found one
+        symbol_stack.pop()
       else:
-        if len(symbolStack) > 0 and symbolStack[len(symbolStack) - 1] == counterparts[symbol]:
-          symbolStack.pop()
-        else:
-          symbolStack.append(symbol)
-    searchIndex -= 1
+        symbol_stack.append(symbol)
 
+    search_index -= 1
 
-  symbolPairRe = re.compile(r'(['+re.escape(symbol + counterparts[symbol])+'])')
+  symbol_pair_regex = re.compile("[" + re.escape(symbol + counterparts[symbol]) + "]")
 
-  symbolStack = [symbol]
+  symbol_stack = [symbol]
 
-  searchIndex = endIndex;
+  search_index = selection_end;
   while True:
-    char = string[searchIndex:searchIndex+1]
-    result = symbolPairRe.match(char)
+    character = string[search_index:search_index + 1]
+    result = symbol_pair_regex.match(character)
+
     if result:
       symbol = result.group()
 
-      if symbolStack[len(symbolStack) - 1] == counterparts[symbol]:
-        symbolStack.pop()
+      if symbol_stack[len(symbol_stack) - 1] == counterparts[symbol]:
+        # counterpart of found symbol is the last one in stack, remove it
+        symbol_stack.pop()
       else:
-        symbolStack.append(symbol)
+        symbol_stack.append(symbol)
 
-      if len(symbolStack) == 0:
-        newEndIndex = searchIndex;
+      if len(symbol_stack) == 0:
+        symbols_end = search_index;
         break
 
-    if searchIndex == len(string):
-      break
+    # end of string reached
+    if search_index == len(string):
+      return
 
-    searchIndex += 1
+    search_index += 1
 
-  try:
-    if(startIndex == newStartIndex and endIndex == newEndIndex):
-      return utils.create_return_obj(newStartIndex - 1, newEndIndex + 1, string, "symbol")
-    else:
-      return utils.create_return_obj(newStartIndex, newEndIndex, string, "symbol")
-  except NameError:
-    return None
+  if(selection_start == symbols_start and selection_end == symbols_end):
+    return utils.create_return_obj(symbols_start - 1, symbols_end + 1, string, "symbol")
+  else:
+    return utils.create_return_obj(symbols_start, symbols_end, string, "symbol")
