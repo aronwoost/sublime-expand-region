@@ -6,12 +6,12 @@ except:
   from . import utils
 
 def expand_to_quotes(string, selection_start, selection_end):
-  quotes_regex = re.compile(r'([\'"])(?:\1|.*?[^\\]\1)')
+  quotes_regex = re.compile("(['\"])(?:\\1|.*?\\1)")
 
   # iterate over all found quotes pairs
   for match in quotes_regex.finditer(string):
-    quotes_start = match.start(0)
-    quotes_end = match.end(0)
+    quotes_start = match.start()
+    quotes_end = match.end()
 
     # quotes are before selection
     if quotes_end < selection_start:
