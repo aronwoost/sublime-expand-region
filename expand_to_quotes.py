@@ -5,26 +5,34 @@ try:
 except:
   from . import utils
 
-def expand_to_quotes(string, startIndex, endIndex):
-  quotesRe = re.compile(r'([\'"])(?:\1|.*?[^\\]\1)')
+def expand_to_quotes(string, selection_start, selection_end):
+  quotes_regex = re.compile(r'([\'"])(?:\1|.*?[^\\]\1)')
 
   # iterate over all found quotes pairs
-  for match in re.finditer(quotesRe, string):
-    start = match.start(0)
-    end = match.end(0)
+  for match in quotes_regex.finditer(string):
+    quotes_start = match.start(0)
+    quotes_end = match.end(0)
 
-    if end < startIndex:
+    # quotes are before selection
+    if quotes_end < selection_start:
       continue
 
-    if(startIndex == start and endIndex == end):
+    # quotes are after selection
+    if quotes_start > selection_end:
       return None
 
-    # current selection is within the found quote pairs
-    if(startIndex > start and endIndex < end):
-      if(startIndex == start + 1 and endIndex == end - 1):
-        if(startIndex == start and endIndex == end):
-          return None
-        else:
-          return utils.create_return_obj(start, end, string, "quotes")
-      else:
-        return utils.create_return_obj(start + 1, end - 1, string, "quotes")
+    # quotes are already selected
+    if(selection_start == quotes_start and selection_end == quotes_end):
+      return None
+
+    # the string w/o the quotes, "quotes content"
+    quotes_content_start = quotes_start + 1
+    quotes_content_end = quotes_end - 1
+
+    # "quotes content" is selected, return with quotes
+    if(selection_start == quotes_content_start and selection_end == quotes_content_end):
+      return utils.create_return_obj(quotes_start, quotes_end, string, "quotes")
+
+    # selection is within the found quote pairs, return "quotes content"
+    if(selection_start > quotes_start and selection_end < quotes_end):
+      return utils.create_return_obj(quotes_content_start, quotes_content_end, string, "quotes")
