@@ -19,7 +19,30 @@ def expand_to_symbols(string, selection_start, selection_end):
     "]":"["
   }
 
-  symbol_stack = []
+  # find symbols in selection that are "not closed"
+  selection_string = string[selection_start:selection_end]
+  selection_quotes = symbols_regex.findall(selection_string)
+
+  backward_symbols_stack = []
+  forward_symbols_stack = []
+
+  if(len(selection_quotes) != 0):
+    inspect_index = 0
+    while True:
+      item = selection_quotes[inspect_index]
+      if(counterparts[item] in selection_quotes):
+        del selection_quotes[selection_quotes.index(item)]
+        del selection_quotes[selection_quotes.index(counterparts[item])]
+      else:
+        inspect_index = inspect_index + 1
+      if(inspect_index >= len(selection_quotes)):
+        break;
+
+    for item in selection_quotes:
+      if(item in opening_symbols):
+        forward_symbols_stack.append(item)
+      elif(item in closing_symbols):
+        backward_symbols_stack.append(item)
 
   search_index = selection_start - 1;
   while True:
@@ -34,21 +57,21 @@ def expand_to_symbols(string, selection_start, selection_end):
       symbol = result.group()
 
       # symbol is opening symbol and stack is empty, we found the symbol we want to expand to
-      if(symbol in opening_symbols and len(symbol_stack) == 0):
+      if(symbol in opening_symbols and len(backward_symbols_stack) == 0):
         symbols_start = search_index + 1
         break
 
-      if len(symbol_stack) > 0 and symbol_stack[len(symbol_stack) - 1] == counterparts[symbol]:
+      if len(backward_symbols_stack) > 0 and backward_symbols_stack[len(backward_symbols_stack) - 1] == counterparts[symbol]:
         # last symbol in the stack is the counterpart of the found one
-        symbol_stack.pop()
+        backward_symbols_stack.pop()
       else:
-        symbol_stack.append(symbol)
+        backward_symbols_stack.append(symbol)
 
     search_index -= 1
 
   symbol_pair_regex = re.compile("[" + re.escape(symbol + counterparts[symbol]) + "]")
 
-  symbol_stack = [symbol]
+  forward_symbols_stack.append(symbol)
 
   search_index = selection_end;
   while True:
@@ -58,13 +81,13 @@ def expand_to_symbols(string, selection_start, selection_end):
     if result:
       symbol = result.group()
 
-      if symbol_stack[len(symbol_stack) - 1] == counterparts[symbol]:
+      if forward_symbols_stack[len(forward_symbols_stack) - 1] == counterparts[symbol]:
         # counterpart of found symbol is the last one in stack, remove it
-        symbol_stack.pop()
+        forward_symbols_stack.pop()
       else:
-        symbol_stack.append(symbol)
+        forward_symbols_stack.append(symbol)
 
-      if len(symbol_stack) == 0:
+      if len(forward_symbols_stack) == 0:
         symbols_end = search_index;
         break
 

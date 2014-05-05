@@ -1,0 +1,4 @@
+o = {
+  test1: {n: 1, n: 2},
+  test2: {n: fn(foo["value"]), n: 4}
+}
