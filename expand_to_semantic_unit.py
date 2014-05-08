@@ -5,6 +5,8 @@ try:
 except:
   from . import utils
 
+# This function definitely sucks and needs a serious rework. Finding semantic
+# units is not that easy. Maybe a parser is needed?
 def expand_to_semantic_unit(string, startIndex, endIndex):
   symbols = "([{)]}"
   breakSymbols = ",;=&|\n"
