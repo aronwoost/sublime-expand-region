@@ -14,6 +14,16 @@ except:
   from . import utils
 
 def expand(string, start, end):
+  selection_is_in_string = expand_to_quotes.expand_to_quotes(string, start, end)
+
+  if selection_is_in_string:
+    string_result = expand_agains_string(selection_is_in_string["string"], start - selection_is_in_string["start"], end - selection_is_in_string["start"])
+
+    if(string_result):
+      string_result["start"] = string_result["start"] + selection_is_in_string["start"]
+      string_result["end"] = string_result["end"] + selection_is_in_string["start"]
+      string_result[string] = string[string_result["start"]:string_result["end"]];
+      return string_result
 
   if utils.selection_contain_linebreaks(string, start, end) == False:
 
@@ -75,7 +85,7 @@ def expand_agains_line(string, start, end):
     result["expand_stack"] = expand_stack
     return result
 
-  expand_stack.append("line")
+  # expand_stack.append("line")
 
   # result = expand_to_line.expand_to_line(string, start, end)
   # if result:
@@ -83,3 +93,20 @@ def expand_agains_line(string, start, end):
   #   return result
 
   # return None
+
+def expand_agains_string(string, start, end):
+  expand_stack = []
+
+  expand_stack.append("semantic_unit")
+
+  result = expand_to_semantic_unit.expand_to_semantic_unit(string, start, end)
+  if result:
+    result["expand_stack"] = expand_stack
+    return result
+
+  expand_stack.append("symbols")
+
+  result = expand_to_symbols.expand_to_symbols(string, start, end)
+  if result:
+    result["expand_stack"] = expand_stack
+    return result

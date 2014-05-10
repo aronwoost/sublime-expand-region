@@ -1,0 +1,3 @@
+function() {
+  return "test [(with symbols) in] strings";
+}

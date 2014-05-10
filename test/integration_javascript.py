@@ -12,6 +12,8 @@ class JavascriptIntegrationTest(unittest.TestCase):
       self.string2 = myfile.read()
     with open ("test/snippets/integration_03.txt", "r") as myfile:
       self.string3 = myfile.read()
+    with open ("test/snippets/integration_04.txt", "r") as myfile:
+      self.string4 = myfile.read()
 
   def test_word (self):
     result = expand(self.string1, 7, 7);
@@ -83,5 +85,41 @@ class JavascriptIntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 42)
     self.assertEqual(result["type"], "symbol")
     self.assertEqual(result["expand_stack"], ["semantic_unit", "symbols"])
+
+  def test_symbols_in_string_01 (self):
+    result = expand(self.string4, 35, 42);
+    self.assertEqual(result["start"], 30)
+    self.assertEqual(result["end"], 42)
+    self.assertEqual(result["type"], "semantic_unit")
+    self.assertEqual(result["expand_stack"], ["semantic_unit"])
+
+  def test_symbols_in_string_02 (self):
+    result = expand(self.string4, 30, 42);
+    self.assertEqual(result["start"], 29)
+    self.assertEqual(result["end"], 43)
+    self.assertEqual(result["type"], "symbol")
+    self.assertEqual(result["expand_stack"], ["semantic_unit", "symbols"])
+
+  def test_symbols_in_string_03 (self):
+    result = expand(self.string4, 29, 43);
+    self.assertEqual(result["start"], 29)
+    self.assertEqual(result["end"], 46)
+    self.assertEqual(result["type"], "semantic_unit")
+    self.assertEqual(result["expand_stack"], ["semantic_unit"])
+
+  def test_symbols_in_string_04 (self):
+    result = expand(self.string4, 29, 46);
+    self.assertEqual(result["start"], 28)
+    self.assertEqual(result["end"], 47)
+    self.assertEqual(result["type"], "symbol")
+    self.assertEqual(result["expand_stack"], ["semantic_unit", "symbols"])
+
+  def test_symbols_in_string_05 (self):
+    result = expand(self.string4, 28, 47);
+    self.assertEqual(result["start"], 23)
+    self.assertEqual(result["end"], 55)
+    self.assertEqual(result["type"], "quotes")
+    self.assertEqual(result["expand_stack"], ["word", "quotes"])
+
 if __name__ == "__main__":
   unittest.main()
