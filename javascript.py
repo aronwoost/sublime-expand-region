@@ -19,7 +19,7 @@ def expand(string, start, end):
   if selection_is_in_string:
     string_result = expand_agains_string(selection_is_in_string["string"], start - selection_is_in_string["start"], end - selection_is_in_string["start"])
 
-    if(string_result):
+    if string_result:
       string_result["start"] = string_result["start"] + selection_is_in_string["start"]
       string_result["end"] = string_result["end"] + selection_is_in_string["start"]
       string_result[string] = string[string_result["start"]:string_result["end"]];
@@ -28,15 +28,15 @@ def expand(string, start, end):
   if utils.selection_contain_linebreaks(string, start, end) == False:
 
     line = utils.get_line(string, start, end)
-    lineString = string[line["start"]:line["end"]]
+    line_string = string[line["start"]:line["end"]]
 
-    lineResult = expand_agains_line(lineString, start - line["start"], end - line["start"])
+    line_result = expand_agains_line(line_string, start - line["start"], end - line["start"])
 
-    if(lineResult):
-      lineResult["start"] = lineResult["start"] + line["start"]
-      lineResult["end"] = lineResult["end"] + line["start"]
-      lineResult[string] = string[lineResult["start"]:lineResult["end"]];
-      return lineResult
+    if line_result:
+      line_result["start"] = line_result["start"] + line["start"]
+      line_result["end"] = line_result["end"] + line["start"]
+      line_result[string] = string[line_result["start"]:line_result["end"]];
+      return line_result
 
   expand_stack = ["semantic_unit"]
 
