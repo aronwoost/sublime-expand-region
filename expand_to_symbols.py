@@ -28,6 +28,7 @@ def expand_to_symbols(string, selection_start, selection_end):
 
   if(len(selection_quotes) != 0):
     inspect_index = 0
+    # remove symbols that have a counterpart, i.e. that are "closed"
     while True:
       item = selection_quotes[inspect_index]
       if(counterparts[item] in selection_quotes):
@@ -38,6 +39,8 @@ def expand_to_symbols(string, selection_start, selection_end):
       if(inspect_index >= len(selection_quotes)):
         break;
 
+    # put the remaining "open" symbols in the stack lists depending if they are
+    # opening or closing symbols
     for item in selection_quotes:
       if(item in opening_symbols):
         forward_symbols_stack.append(item)
