@@ -1,3 +1,5 @@
+import re
+
 try:
   import javascript
   import html
@@ -7,7 +9,7 @@ except:
 
 def expand(string, start, end, extension=None):
 
-  if(extension in ["html", "htm", "xml"]):
+  if(re.compile("html|htm|xml").search(extension)):
     return html.expand(string, start, end)
 
   return javascript.expand(string, start, end)
