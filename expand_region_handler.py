@@ -7,7 +7,7 @@ except:
   from . import javascript
   from . import html
 
-def expand(string, start, end, extension=None):
+def expand(string, start, end, extension=""):
 
   if(re.compile("html|htm|xml").search(extension)):
     return html.expand(string, start, end)
