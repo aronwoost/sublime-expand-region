@@ -51,5 +51,11 @@ class ExpandToSymbolTest(unittest.TestCase):
     self.assertEqual(result["end"], 66)
     # self.assertEqual(result["string"], "foo.indexOf('bar') > -1")
 
+  def test_ignore_symbols_in_strings (self):
+    result = expand_to_symbols("{'a(a'+bb+'c)c'}", 8, 8);
+    self.assertEqual(result["start"], 1)
+    self.assertEqual(result["end"], 15)
+    self.assertEqual(result["type"], "symbol")
+
 if __name__ == "__main__":
   unittest.main()

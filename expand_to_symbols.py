@@ -10,6 +10,24 @@ def expand_to_symbols(string, selection_start, selection_end):
   closing_symbols = ")]}";
   symbols_regex = re.compile("[" + re.escape(opening_symbols + closing_symbols)+"]")
 
+  quotes_regex = re.compile("(['\"])(?:\\1|.*?\\1)")
+  quotes_blacklist = {}
+
+  # get all quoted strings and create dict with key of index = True
+  # Example: f+"oob"+bar
+  # quotes_blacklist = {
+  #   2: true, 3: true, 4: true, 5: true, 6: true
+  # }
+  for match in quotes_regex.finditer(string):
+    quotes_start = match.start()
+    quotes_end = match.end()
+    i = 0;
+    while True:
+      quotes_blacklist[quotes_start + i] = True
+      i += 1
+      if (quotes_start + i == quotes_end):
+        break;
+
   counterparts = {
     "(":")",
     "{":"}",
@@ -48,11 +66,17 @@ def expand_to_symbols(string, selection_start, selection_end):
         backward_symbols_stack.append(item)
 
   search_index = selection_start - 1;
+
+  # look back from begin of selection
   while True:
     # begin of string reached
     if(search_index < 0):
       return None
 
+    # skip if current index is within a quote
+    if (quotes_blacklist.get(search_index, False) == True):
+      search_index -= 1
+      continue;
     character = string[search_index:search_index + 1]
     result = symbols_regex.match(character)
 
@@ -77,7 +101,13 @@ def expand_to_symbols(string, selection_start, selection_end):
   forward_symbols_stack.append(symbol)
 
   search_index = selection_end;
+
+  # look forward from end of selection
   while True:
+    # skip if current index is within a quote
+    if (quotes_blacklist.get(search_index, False) == True):
+      search_index += 1
+      continue;
     character = string[search_index:search_index + 1]
     result = symbol_pair_regex.match(character)
 
