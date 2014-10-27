@@ -1,14 +1,11 @@
-import re
-import hashlib
+import re, hashlib, json
 
 try:
   import javascript
   import html
-  import json
 except:
   from . import javascript
   from . import html
-  from . import json
 
 def expand(string, start, end, extension="", settings=None):
 
