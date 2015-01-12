@@ -33,3 +33,12 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
         self.view.sel().add(sublime.Region(result["start"], result["end"]))
         if debug:
           print("startIndex: {0}, endIndex: {1}, type: {2}".format(result["start"], result["end"], result["type"]))
+
+class ExpandRegionContext(sublime_plugin.EventListener):
+    def on_query_context(self, view, key, *args):
+      if key == "expand_region_soft_undo":
+        item = view.command_history(0)
+        if item[0] == "expand_region":
+          return True
+
+      return None

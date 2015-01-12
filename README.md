@@ -69,10 +69,19 @@ The "Packages" directory is located at:
 
 ## Using
 
-- Use use `cmd+shift+P` then `ExpandRegion`
-- Or (**recommended**) set a shortcut.
-  I recommend using the shortcut for the build in "Expand Selection to Scope". Open "Key Bindings - User" and add to following line: 
-  `{ "keys": ["super+shift+space"], "command": "expand_region" }`
+- Set a shortcut.
+  Open "Key Bindings - User" and add to following line: 
+```
+{ "keys": ["super+shift+space"], "command": "expand_region" },
+{
+  "keys": ["super+u"],
+  "command": "expand_region",
+  "args": {"undo": true},
+  "context": [{ "key": "expand_region_soft_undo" }]
+},
+```
+Note: third party plugins can not properly hook into the history. So soft-undo in basically only a undo expand selection. Soft-redo will not work.
+
 
 ## Develop
 

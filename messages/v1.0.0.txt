@@ -1,0 +1,26 @@
+
+
+
+UPDATE TIME!
+
+Welcome to ExpandRegion for Sublime Text v1.0.0
+
+
+
+
+
+New:
+
+- Soft-undo
+
+  How to: https://github.com/aronwoost/sublime-expand-region#using
+
+
+
+
+
+
+
+Feedback and bugs?
+
+  -> https://github.com/aronwoost/sublime-expand-region/issues
