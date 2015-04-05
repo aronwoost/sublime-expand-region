@@ -6,7 +6,7 @@ except:
   from . import utils
 
 def expand_to_quotes(string, selection_start, selection_end):
-  quotes_regex = re.compile("(['\"])(?:\\1|.*?\\1)")
+  quotes_regex = re.compile("(['\"])(?:\\\.|.)*?\\1")
 
   # iterate over all found quotes pairs
   for match in quotes_regex.finditer(string):

@@ -10,6 +10,8 @@ class ExpandToQuotesTest(unittest.TestCase):
       self.string1 = myfile.read()
     with open ("test/snippets/quote_02.txt", "r") as myfile:
       self.string2 = myfile.read()
+    with open ("test/snippets/quote_03.txt", "r") as myfile:
+      self.string3 = myfile.read()
 
   def test_double_quotes_inner (self):
     result = expand_to_quotes(self.string1, 6, 12);
@@ -42,6 +44,12 @@ class ExpandToQuotesTest(unittest.TestCase):
   def test_should_not_find2 (self):
     result = expand_to_quotes("': '", 4, 4);
     self.assertEqual(result, None)
+
+  def test_ignore_escaped_quotes (self):
+    result = expand_to_quotes(self.string3, 2, 2);
+    self.assertEqual(result["start"], 1)
+    self.assertEqual(result["end"], 13)
+    self.assertEqual(result["string"], "test\\\"string")
 
 if __name__ == "__main__":
   unittest.main()
