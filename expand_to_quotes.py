@@ -13,15 +13,15 @@ def expand_to_quotes(string, selection_start, selection_end):
     quotes_start = match.start()
     quotes_end = match.end()
 
-    # quotes are before selection
+    # quotes pair end is before selection, stop here and continue loop
     if quotes_end < selection_start:
       continue
 
-    # quotes are after selection
+    # quotes pair start is after selection, return, no need to continue loop
     if quotes_start > selection_end:
       return None
 
-    # quotes are already selected
+    # quotes are already selection_end
     if(selection_start == quotes_start and selection_end == quotes_end):
       return None
 
