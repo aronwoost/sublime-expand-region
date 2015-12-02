@@ -1,5 +1,6 @@
 try:
   import expand_to_word
+  import expand_to_subword
   import expand_to_word_with_dots
   import expand_to_symbols
   import expand_to_quotes
@@ -7,6 +8,7 @@ try:
   import utils
 except:
   from . import expand_to_word
+  from . import expand_to_subword
   from . import expand_to_word_with_dots
   from . import expand_to_symbols
   from . import expand_to_quotes
@@ -56,6 +58,13 @@ def expand(string, start, end):
 
 def expand_agains_line(string, start, end):
   expand_stack = []
+
+  expand_stack.append("subword")
+
+  result = expand_to_subword.expand_to_subword(string, start, end)
+  if result:
+    result["expand_stack"] = expand_stack
+    return result
 
   expand_stack.append("word")
 

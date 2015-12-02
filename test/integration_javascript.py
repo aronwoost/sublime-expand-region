@@ -15,37 +15,45 @@ class JavascriptIntegrationTest(unittest.TestCase):
     with open ("test/snippets/integration_04.txt", "r") as myfile:
       self.string4 = myfile.read()
 
-  def test_word (self):
+  def test_subword (self):
     result = expand(self.string1, 7, 7);
     self.assertEqual(result["start"], 6)
     self.assertEqual(result["end"], 9)
     self.assertEqual(result["string"], "bar")
-    self.assertEqual(result["type"], "word")
-    self.assertEqual(result["expand_stack"], ["word"])
+    self.assertEqual(result["type"], "subword")
+    self.assertEqual(result["expand_stack"], ["subword"])
 
-  def test_quotes_inner (self):
+  def test_word (self):
     result = expand(self.string1, 6, 9);
     self.assertEqual(result["start"], 2)
     self.assertEqual(result["end"], 9)
-    self.assertEqual(result["string"], "foo bar")
+    self.assertEqual(result["string"], "foo_bar")
+    self.assertEqual(result["type"], "word")
+    self.assertEqual(result["expand_stack"], ["subword", "word"])
+
+  def test_quotes_inner (self):
+    result = expand(self.string1, 2, 9);
+    self.assertEqual(result["start"], 2)
+    self.assertEqual(result["end"], 17)
+    self.assertEqual(result["string"], "foo_bar foo bar")
     self.assertEqual(result["type"], "quotes")
-    self.assertEqual(result["expand_stack"], ["word", "quotes"])
+    self.assertEqual(result["expand_stack"], ["subword", "word", "quotes"])
 
   def test_quotes_outer (self):
-    result = expand(self.string1, 2, 9);
+    result = expand(self.string1, 2, 17);
     self.assertEqual(result["start"], 1)
-    self.assertEqual(result["end"], 10)
-    self.assertEqual(result["string"], "\"foo bar\"")
+    self.assertEqual(result["end"], 18)
+    self.assertEqual(result["string"], "\"foo_bar foo bar\"")
     self.assertEqual(result["type"], "quotes")
-    self.assertEqual(result["expand_stack"], ["word", "quotes"])
+    self.assertEqual(result["expand_stack"], ["subword", "word", "quotes"])
 
   def test_symbol_inner (self):
     result = expand(self.string1, 1, 10);
     self.assertEqual(result["start"], 1)
-    self.assertEqual(result["end"], 16)
-    self.assertEqual(result["string"], "\"foo bar\" + \"x\"")
+    self.assertEqual(result["end"], 24)
+    self.assertEqual(result["string"], "\"foo_bar foo bar\" + \"x\"")
     self.assertEqual(result["type"], "semantic_unit")
-    self.assertEqual(result["expand_stack"], ["word", "quotes", "semantic_unit"])
+    self.assertEqual(result["expand_stack"], ["subword", "word", "quotes", "semantic_unit"])
 
   def test_dont_expand_to_dots (self):
     result = expand(self.string2, 2, 5);
@@ -53,7 +61,7 @@ class JavascriptIntegrationTest(unittest.TestCase):
     self.assertEqual(result["end"], 10)
     self.assertEqual(result["string"], " foo.bar ")
     self.assertEqual(result["type"], "quotes")
-    self.assertEqual(result["expand_stack"], ["word", "quotes"])
+    self.assertEqual(result["expand_stack"], ["subword", "word", "quotes"])
 
   # def test_expand_to_line (self):
   #   result = expand(self.string3, 30, 35);
@@ -61,7 +69,7 @@ class JavascriptIntegrationTest(unittest.TestCase):
   #   self.assertEqual(result["end"], 37)
   #   self.assertEqual(result["string"], "foo: true")
   #   self.assertEqual(result["type"], "line")
-  #   self.assertEqual(result["expand_stack"], ["word", "quotes", "semantic_unit", "symbols", "line"])
+  #   self.assertEqual(result["expand_stack"], ["subword", "word", "quotes", "semantic_unit", "symbols", "line"])
 
   def test_expand_to_symbol_from_line (self):
     result = expand(self.string3, 28, 37);
@@ -119,7 +127,7 @@ class JavascriptIntegrationTest(unittest.TestCase):
     self.assertEqual(result["start"], 23)
     self.assertEqual(result["end"], 55)
     self.assertEqual(result["type"], "quotes")
-    self.assertEqual(result["expand_stack"], ["word", "quotes"])
+    self.assertEqual(result["expand_stack"], ["subword", "word", "quotes"])
 
 if __name__ == "__main__":
   unittest.main()
