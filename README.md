@@ -40,6 +40,10 @@ HTML
 
 and so on...
 
+LaTeX (thx [r-stein](https://github.com/r-stein))
+
+![](https://cloud.githubusercontent.com/assets/12573621/11544524/994770b4-9942-11e5-9ffc-9819d50048b6.gif)
+
 ## Installing
 
 **With the Package Control plugin:** The easiest way to install ExpandRegion is through Package Control, which can be found at this site: [http://wbond.net/sublime_packages/package_control](http://wbond.net/sublime_packages/package_control)
