@@ -1,0 +1,18 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\begin{document}
+
+\section*{My Section}
+
+\begin{itemize}
+\item a nested environment
+  \begin{itemize}
+  \item \dots{}
+  \end{itemize}
+\item \textcolor{red}{The colored \textbf{text}} \textit{and italic text}
+\end{itemize}
+
+
+\end{document}
