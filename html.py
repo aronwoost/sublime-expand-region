@@ -1,14 +1,23 @@
 try:
   import expand_to_word
+  import expand_to_subword
   import expand_to_quotes
   import expand_to_xml_node
 except:
   from . import expand_to_word
+  from . import expand_to_subword
   from . import expand_to_quotes
   from . import expand_to_xml_node
 
 def expand(string, start, end):
   expand_stack = []
+
+  expand_stack.append("subword")
+
+  result = expand_to_subword.expand_to_subword(string, start, end)
+  if result:
+    result["expand_stack"] = expand_stack
+    return result
 
   expand_stack.append("word")
 
