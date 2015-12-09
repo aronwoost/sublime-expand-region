@@ -9,11 +9,11 @@ except:
   from . import html
   from . import latex
 
-def expand(string, start, end, extension="", settings=None):
+def expand(string, start, end, language="", settings=None):
 
-  if(re.compile("html|htm|xml").search(extension)):
+  if language == "html":
     result = html.expand(string, start, end)
-  elif extension in ["tex", "tikz", "sty"]:
+  elif language == "tex":
     result = latex.expand(string, start, end)
   else:
     result = javascript.expand(string, start, end)
