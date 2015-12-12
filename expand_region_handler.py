@@ -4,10 +4,12 @@ try:
   import javascript
   import html
   import latex
+  import python
 except:
   from . import javascript
   from . import html
   from . import latex
+  from . import python
 
 def expand(string, start, end, extension="", settings=None):
 
@@ -15,6 +17,8 @@ def expand(string, start, end, extension="", settings=None):
     result = html.expand(string, start, end)
   elif extension in ["tex", "tikz", "sty"]:
     result = latex.expand(string, start, end)
+  elif re.match(r"py.?", extension):
+    result = python.expand(string, start, end)
   else:
     result = javascript.expand(string, start, end)
 

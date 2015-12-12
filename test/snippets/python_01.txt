@@ -1,0 +1,18 @@
+import os
+
+def function():
+    return True
+
+class TestClass():
+    def method1(foo, bar):
+        # comment
+        if a:
+            b = c(d)
+        e = foo(bar, bar)
+        if e:
+            result = f(foo_bar, bar)
+            x = y
+        return result
+
+    def method2():
+        pass

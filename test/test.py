@@ -11,6 +11,7 @@ from . import units_xml_helper
 from . import integration_javascript
 from . import integration_html
 from . import integration_latex
+from . import integration_python
 
 if __name__ == "__main__":
   test_loader = unittest.TestLoader()
@@ -31,5 +32,6 @@ if __name__ == "__main__":
   suite.addTests(test_loader.loadTestsFromTestCase(integration_javascript.JavascriptIntegrationTest))
   suite.addTests(test_loader.loadTestsFromTestCase(integration_html.HtmlIntegrationTest))
   suite.addTests(test_loader.loadTestsFromTestCase(integration_latex.LatexIntegrationTest))
+  suite.addTests(test_loader.loadTestsFromTestCase(integration_python.PythonIntegrationTest))
 
   unittest.TextTestRunner(verbosity=2).run(suite)
