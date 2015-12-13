@@ -7,32 +7,35 @@ except:
 
 class ExpandRegionCommand(sublime_plugin.TextCommand):
   def run(self, edit, undo=False, debug=True):
+    view = self.view
 
     if (undo):
-      string = self.view.substr(sublime.Region(0, self.view.size()))
-      start = self.view.sel()[0].begin()
-      end = self.view.sel()[0].end()
-      result = expand_region_handler.undo(string, start, end, self.view.settings())
+      string = view.substr(sublime.Region(0, view.size()))
+      start = view.sel()[0].begin()
+      end = view.sel()[0].end()
+      result = expand_region_handler.undo(string, start, end, view.settings())
       if (result):
-        self.view.sel().clear()
-        self.view.sel().add(sublime.Region(result["start"], result["end"]))
+        view.sel().clear()
+        view.sel().add(sublime.Region(result["start"], result["end"]))
       return
 
     language = ""
-    point = self.view.sel()[0].b
-    if self.view.score_selector(point, "text.html") or self.view.score_selector(point, "text.xml"):
+    point = view.sel()[0].b
+    if view.score_selector(point, "text.html") or view.score_selector(point, "text.xml"):
       language = "html"
-    elif self.view.score_selector(point, "text.tex"):
+    elif view.score_selector(point, "source.python") or view.score_selector(point, "source.cython"):
+      language = "python"
+    elif view.score_selector(point, "text.tex"):
       language = "tex"
 
-    for region in self.view.sel():
-      string = self.view.substr(sublime.Region(0, self.view.size()))
+    for region in view.sel():
+      string = view.substr(sublime.Region(0, view.size()))
       start = region.begin()
       end = region.end()
 
-      result = expand_region_handler.expand(string, start, end, language, self.view.settings())
+      result = expand_region_handler.expand(string, start, end, language, view.settings())
       if result:
-        self.view.sel().add(sublime.Region(result["start"], result["end"]))
+        view.sel().add(sublime.Region(result["start"], result["end"]))
         if debug:
           print("startIndex: {0}, endIndex: {1}, type: {2}".format(result["start"], result["end"], result["type"]))
 

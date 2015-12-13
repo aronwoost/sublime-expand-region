@@ -17,7 +17,7 @@ def expand(string, start, end, language="", settings=None):
     result = html.expand(string, start, end)
   elif language == "tex":
     result = latex.expand(string, start, end)
-  elif re.match(r"py.?", extension):
+  elif language == "python":
     result = python.expand(string, start, end)
   else:
     result = javascript.expand(string, start, end)
