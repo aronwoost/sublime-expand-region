@@ -18,17 +18,19 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
         self.view.sel().add(sublime.Region(result["start"], result["end"]))
       return
 
-    extension = ""
-    if (self.view.file_name()):
-      name, fileex = os.path.splitext(self.view.file_name())
-      extension = fileex[1:]
+    language = ""
+    point = self.view.sel()[0].b
+    if self.view.score_selector(point, "text.html") or self.view.score_selector(point, "text.xml"):
+      language = "html"
+    elif self.view.score_selector(point, "text.tex"):
+      language = "tex"
 
     for region in self.view.sel():
       string = self.view.substr(sublime.Region(0, self.view.size()))
       start = region.begin()
       end = region.end()
 
-      result = expand_region_handler.expand(string, start, end, extension, self.view.settings())
+      result = expand_region_handler.expand(string, start, end, language, self.view.settings())
       if result:
         self.view.sel().add(sublime.Region(result["start"], result["end"]))
         if debug:

@@ -11,11 +11,11 @@ except:
   from . import latex
   from . import python
 
-def expand(string, start, end, extension="", settings=None):
+def expand(string, start, end, language="", settings=None):
 
-  if(re.compile("html|htm|xml").search(extension)):
+  if language == "html":
     result = html.expand(string, start, end)
-  elif extension in ["tex", "tikz", "sty"]:
+  elif language == "tex":
     result = latex.expand(string, start, end)
   elif re.match(r"py.?", extension):
     result = python.expand(string, start, end)
