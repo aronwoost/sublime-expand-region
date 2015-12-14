@@ -10,6 +10,9 @@ class WordTest(unittest.TestCase):
       self.string1 = myfile.read()
     with open ("test/snippets/word_02.txt", "r") as myfile:
       self.string2 = myfile.read()
+    with open ("test/snippets/word_03.txt", "r") as myfile:
+      # decode utf8 unicode
+      self.string3 = myfile.read().decode("utf8")
 
   def test_word_with_whitespaces_around (self):
     result = expand_to_word(" hello ", 3, 3);
@@ -50,6 +53,26 @@ class WordTest(unittest.TestCase):
   def test_dont_expand_to_linebreak (self):
     result = expand_to_word(self.string2, 0, 0);
     self.assertEqual(result, None)
+
+  def test_special_chars1(self):
+    result = expand_to_word(self.string3, 15, 15)
+    self.assertEqual(result["start"], 13)
+    self.assertEqual(result["end"], 24)
+
+  def test_special_chars2(self):
+    result = expand_to_word(self.string3, 57, 57)
+    self.assertEqual(result["start"], 57)
+    self.assertEqual(result["end"], 64)
+
+  def test_special_chars3(self):
+    result = expand_to_word(self.string3, 75, 77)
+    self.assertEqual(result["start"], 75)
+    self.assertEqual(result["end"], 85)
+
+  def test_special_chars4(self):
+    result = expand_to_word(self.string3, 89, 89)
+    self.assertEqual(result["start"], 86)
+    self.assertEqual(result["end"], 89)
 
 if __name__ == "__main__":
   unittest.main()
