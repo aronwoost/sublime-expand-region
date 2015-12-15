@@ -1,0 +1,9 @@
+
+def foo():
+    if test and\
+            other_text and \
+            third_test:
+        x = y
+        y = foo(bar)
+    else:
+        c = d
