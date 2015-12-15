@@ -1,0 +1,1 @@
+ExpandRegion unterstützt jetzt deutsche Sonderzeichen in Wörtern, daß kann vorzüglich für Texte genutzt werden

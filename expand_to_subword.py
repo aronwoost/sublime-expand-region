@@ -23,7 +23,20 @@ def expand_to_subword(string, start, end):
     upper = re.compile(r"[A-Z]")
     if upper.match(string[result["start"]-1:result["start"]]):
         result["start"] -= 1
+    # check that it is a "true" subword, i.e. inside a word
+    if not _is_true_subword(string, result):
+        return None
     return result
+
+
+def _is_true_subword(string, result):
+    start = result["start"]
+    end = result["end"]
+    char_before = string[start-1:start]
+    char_after = string[end:end+1]
+    is_word_before = re.match(r"[a-z0-9_]", char_before, re.IGNORECASE)
+    is_word_after = re.match(r"[a-z0-9_]", char_after, re.IGNORECASE)
+    return bool(is_word_before or is_word_after)
 
 
 def _is_inside_upper(string, start, end):
