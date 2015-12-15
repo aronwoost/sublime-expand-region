@@ -10,47 +10,70 @@ It works similar to ExpandRegion for Emacs and "Structural Selection" (Control-W
 
 ## Example
 
-JavaScript (should also work for other c'ish languages like Java).
+### JavaScript (should also work for other c'ish languages like Java).
 
 ![](http://aronwoost.github.io/expand-region.gif)
 
-1. Expand selection to sub_word
-2. Expand selection to word
-3. Expand selection to quotes (content only)
-4. Expand selection to quotes (with quotes)
-5. Expand selection to square braces
-6. Expand selection to expression
-7. Expand selection to content of braces (all arguments in this case)
-8. Expand selection to line
-9. Expand selection to function body (w/o curly brace)
-10. Expand selection to function body (with curly brace)
+1. Expand selection to word
+2. Expand selection to quotes (content only)
+3. Expand selection to quotes (with quotes)
+4. Expand selection to square braces
+5. Expand selection to expression
+6. Expand selection to content of braces (all arguments in this case)
+7. Expand selection to line
+8. Expand selection to function body (w/o curly brace)
+9. Expand selection to function body (with curly brace)
 
 and so on...
 
-HTML
+### Python
+
+![](https://cloud.githubusercontent.com/assets/12573621/11763466/a55ccc34-a10b-11e5-92e8-71c5a827db2c.gif)
+
+Behaves similar to JavaScript, but also depends on indentation:
+
+1. Expand selection to word
+2. Expand selection to parentheses (content only)
+3. Expand selection to parentheses (with parentheses)
+4. Expand selection to function call
+5. Expand selection to line (w/o indent)
+6. Expand selection to indentation
+7. Expand selection to block start before indentation
+8. Expand selection to indentation
+9. Expand selection to block start before indentation
+10. Expand selection to indentation
+11. Expand selection to block start before indentation
+
+and so on...
+
+### HTML
 
 ![](http://aronwoost.github.io/expand-to-html.gif)
 
-1. Expand selection to sub_word
-2. Expand selection to word
-3. Expand selection to quotes (content only)
-4. Expand selection to quotes (with quotes)
-5. Expand selection to complete self closing tag
-6. Expand selection to parent node content
-7. Expand selection to complete node
-8. Expand selection to parent node content
+1. Expand selection to word
+2. Expand selection to quotes (content only)
+3. Expand selection to quotes (with quotes)
+4. Expand selection to complete self closing tag
+5. Expand selection to parent node content
+6. Expand selection to complete node
+7. Expand selection to parent node content
 
 and so on...
 
-LaTeX (thx [r-stein](https://github.com/r-stein))
+### LaTeX (thx [r-stein](https://github.com/r-stein))
 
 ![](https://cloud.githubusercontent.com/assets/12573621/11544524/994770b4-9942-11e5-9ffc-9819d50048b6.gif)
 
 1. Expand selection to word
 2. Expand selection to command
 3. Expand selection to command arguments
-4. Expand selection to surrounding command
-5. Expand selection to surrounding environment
+4. Expand selection to brackets (content only)
+5. Expand selection to brackets (with brackets)
+6. Expand selection to surrounding command
+7. Expand selection to surrounding environment (content only)
+8. Expand selection to surrounding environment (whole)
+9. Expand selection to surrounding environment (content only)
+10. Expand selection to surrounding environment (whole)
 
 and so on...
 
