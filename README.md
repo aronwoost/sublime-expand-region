@@ -6,7 +6,7 @@
 
 ExpandRegion works a bit like the build in "Expand Selection to Scope", however it does not depend on Scopes (Scopes are used by ST to "understand" code, i.e. for syntax highlighting). Therefore selection expansion can be more granular and customizable.
 
-It works simlar to ExpandRegion for Emacs and "Structural Selection" (Control-W) in the JetBrains IDE's (i.e. IntelliJ IDEA).
+It works similar to ExpandRegion for Emacs and "Structural Selection" (Control-W) in the JetBrains IDE's (i.e. IntelliJ IDEA).
 
 ## Example
 
@@ -14,15 +14,16 @@ JavaScript (should also work for other c'ish languages like Java).
 
 ![](http://aronwoost.github.io/expand-region.gif)
 
-1. Expand selection to word
-2. Expand selection to quotes (content only)
-3. Expand selection to quotes (with quotes)
-4. Expand selection to square braces
-5. Expand selection to expression
-6. Expand selection to content of braces (all arguments in this case)
-7. Expand selection to line
-8. Expand selection to function body (w/o curly brace)
-9. Expand selection to function body (with curly brace)
+1. Expand selection to sub_word
+2. Expand selection to word
+3. Expand selection to quotes (content only)
+4. Expand selection to quotes (with quotes)
+5. Expand selection to square braces
+6. Expand selection to expression
+7. Expand selection to content of braces (all arguments in this case)
+8. Expand selection to line
+9. Expand selection to function body (w/o curly brace)
+10. Expand selection to function body (with curly brace)
 
 and so on...
 
@@ -30,19 +31,28 @@ HTML
 
 ![](http://aronwoost.github.io/expand-to-html.gif)
 
-1. Expand selection to word
-2. Expand selection to quotes (content only)
-3. Expand selection to quotes (with quotes)
-4. Expand selection to complete self closing tag
-5. Expand selection to parent node content
-6. Expand selection to complete node
-7. Expand selection to parent node content
+1. Expand selection to sub_word
+2. Expand selection to word
+3. Expand selection to quotes (content only)
+4. Expand selection to quotes (with quotes)
+5. Expand selection to complete self closing tag
+6. Expand selection to parent node content
+7. Expand selection to complete node
+8. Expand selection to parent node content
 
 and so on...
 
 LaTeX (thx [r-stein](https://github.com/r-stein))
 
 ![](https://cloud.githubusercontent.com/assets/12573621/11544524/994770b4-9942-11e5-9ffc-9819d50048b6.gif)
+
+1. Expand selection to word
+2. Expand selection to command
+3. Expand selection to command arguments
+4. Expand selection to surrounding command
+5. Expand selection to surrounding environment
+
+and so on...
 
 ## Installing
 
@@ -54,7 +64,7 @@ Once you install Package Control, restart ST and bring up the Command Palette (`
 
 **With Git:** Clone the repository in your Sublime Text "Packages" directory:
 
-    git clone https://github.com/aronwoost/sublime-expand-region.git
+    git clone https://github.com/aronwoost/sublime-expand-region.git ExpandRegion
 
 
 The "Packages" directory is located at:
@@ -75,7 +85,7 @@ The "Packages" directory is located at:
 
 - Set a shortcut.
   Open "Key Bindings - User" and add to following line: 
-```
+``` js
 { "keys": ["super+shift+space"], "command": "expand_region" },
 {
   "keys": ["super+u"],
