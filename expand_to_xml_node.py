@@ -24,9 +24,15 @@ def expand_to_xml_node(string, start, end):
     # else it's self closing and there is no matching tag
 
   # check if current selection is within a tag, if it is expand to the tag
+  # first expand to inside the tag and then to the whole tag
   is_within_tag_result = is_within_tag(string, start, end)
-  if(is_within_tag_result):
-    return utils.create_return_obj(is_within_tag_result["start"], is_within_tag_result["end"], string, "complete_node")
+  if is_within_tag_result:
+    inner_start = is_within_tag_result["start"] + 1
+    inner_end = is_within_tag_result["end"] - 1
+    if start == inner_start and end == inner_end:
+      return utils.create_return_obj(is_within_tag_result["start"], is_within_tag_result["end"], string, "complete_node")
+    else:
+      return utils.create_return_obj(inner_start, inner_end, string, "inner_node")
   # expand selection to the "parent" node of the current selection
   stringStartToSelectionStart = string[:start]
   parent_opening_tag = find_tag(stringStartToSelectionStart, "backward")
