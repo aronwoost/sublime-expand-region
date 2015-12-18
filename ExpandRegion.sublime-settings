@@ -1,0 +1,30 @@
+{
+    // The selectors for the different languages.
+    // This specifies a list of scopes for every supported language.
+    // If the intended language is not supported you may chose the language, which fits best,
+    //  e.g. python can be used for indendation based language
+    //       javascript for other C-like languages
+    // The scope which fits the best to the current cursor context will be selected.
+    "scope_selectors":
+    {
+        "javascript":
+        [
+            "source.js",
+            "markup.raw.block.fenced.markdown"
+        ],
+        "python":
+        [
+            "source.python",
+            "source.cython"
+        ],
+        "html":
+        [
+            "text.html",
+            "text.xml"
+        ],
+        "latex":
+        [
+            "text.tex"
+        ]
+    }
+}
