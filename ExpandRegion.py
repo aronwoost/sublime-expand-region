@@ -5,6 +5,32 @@ try:
 except:
   from . import expand_region_handler
 
+# get the used sublime text version
+_ST3 = sublime.version() >= '3000'
+
+if _ST3:
+  def _force_enable_soft_undo(view, edit, new_regions):
+    # end the current edit
+    view.end_edit(edit)
+    # this is a hack to enable soft_undo
+    # the entry in soft undo seems to be forced if we change the selection
+    # with a token, that has a different id.
+    # Hence just use the (invalid) id = -1.
+    subedit = view.begin_edit(-1, "expand_region_force_enable_soft_undo")
+    try:
+      for sel in new_regions:
+        view.sel().add(sel)
+    finally:
+      view.end_edit(subedit)
+else:  # ST2
+  def _force_enable_soft_undo(view, edit, new_regions):
+    # end the current edit
+    view.end_edit(edit)
+    # force enable soft-undo by starting a new edit with a different name
+    subedit = view.begin_edit("expand_region_force_enable_soft_undo")
+    view.end_edit(subedit)
+
+
 class ExpandRegionCommand(sublime_plugin.TextCommand):
   def run(self, edit, undo=False, debug=True):
     view = self.view
@@ -28,16 +54,31 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
     elif view.score_selector(point, "text.tex"):
       language = "tex"
 
-    for region in view.sel():
-      string = view.substr(sublime.Region(0, view.size()))
+    new_regions = []
+    for region in self.view.sel():
+      string = self.view.substr(sublime.Region(0, self.view.size()))
       start = region.begin()
       end = region.end()
 
-      result = expand_region_handler.expand(string, start, end, language, view.settings())
+      result = expand_region_handler.expand(string, start, end, language, self.view.settings())
       if result:
-        view.sel().add(sublime.Region(result["start"], result["end"]))
+        new_regions.append(sublime.Region(result["start"], result["end"]))
         if debug:
           print("startIndex: {0}, endIndex: {1}, type: {2}".format(result["start"], result["end"], result["type"]))
+      else:
+        # if there is no result, keep the current region
+        new_regions.append(region)
+
+    # replace the selections with the new regions
+    view.sel().clear()
+    for sel in new_regions:
+      view.sel().add(sel)
+
+    # TODO take this from the settings
+    do_force_enable_soft_undo = True
+    if do_force_enable_soft_undo:
+      _force_enable_soft_undo(view, edit, new_regions)
+
 
 class ExpandRegionContext(sublime_plugin.EventListener):
     def on_query_context(self, view, key, *args):
