@@ -1,0 +1,33 @@
+{
+    "scope_selectors":
+    {
+        "javascript":
+        [
+            "source.js",
+            "source.java",
+            "source.cs",
+            "source.c++",
+            "source.php",
+            "source.sublime-settings",
+            "markup.raw.block.fenced.markdown"
+        ],
+        "python":
+        [
+            "source.python",
+            "source.cython",
+            "source.coffee",
+            "source.haskell",
+            "source.yaml",
+            "source.sass"
+        ],
+        "html":
+        [
+            "text.html",
+            "text.xml"
+        ],
+        "latex":
+        [
+            "text.tex"
+        ]
+    }
+}

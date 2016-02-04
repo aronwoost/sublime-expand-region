@@ -5,8 +5,27 @@ try:
 except:
   from . import expand_region_handler
 
+
+def _detect_language(view, settings_name):
+  point = view.sel()[0].b
+  settings = sublime.load_settings(settings_name + ".sublime-settings")
+  selectors = settings.get("scope_selectors")
+  def maximal_score(scopes):
+    if not scopes:  # validity check
+      return 0
+    return max(view.score_selector(point, s) for s in scopes)
+  # calculate the maximal score for each language
+  scores = [(k, maximal_score(v)) for k, v in selectors.items()]
+  if not scores:  # validity check
+    return
+  # get the language with the best score
+  scored_lang, score = max(scores, key=lambda item: item[1])
+  language = scored_lang if score else ""
+  return language
+
+
 class ExpandRegionCommand(sublime_plugin.TextCommand):
-  def run(self, edit, undo=False, debug=True):
+  def run(self, edit, language="", undo=False, debug=True):
     view = self.view
 
     if (undo):
@@ -19,14 +38,11 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
         view.sel().add(sublime.Region(result["start"], result["end"]))
       return
 
-    language = ""
-    point = view.sel()[0].b
-    if view.score_selector(point, "text.html") or view.score_selector(point, "text.xml"):
-      language = "html"
-    elif view.score_selector(point, "source.python") or view.score_selector(point, "source.cython"):
-      language = "python"
-    elif view.score_selector(point, "text.tex"):
-      language = "tex"
+    if not language:
+      language = (_detect_language(view, "ExpandRegion") or
+                  _detect_language(view, "ExpandRegionFallback"))
+    if debug:
+      print("Determined language: '{0}'".format(language))
 
     for region in view.sel():
       string = view.substr(sublime.Region(0, view.size()))

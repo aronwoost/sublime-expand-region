@@ -15,7 +15,7 @@ def expand(string, start, end, language="", settings=None):
 
   if language == "html":
     result = html.expand(string, start, end)
-  elif language == "tex":
+  elif language == "latex":
     result = latex.expand(string, start, end)
   elif language == "python":
     result = python.expand(string, start, end)
