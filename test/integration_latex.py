@@ -9,6 +9,8 @@ class LatexIntegrationTest(unittest.TestCase):
     def setUpClass(self):
         with open("test/snippets/latex_01.txt", "r") as myfile:
             self.string1 = myfile.read()
+        with open("test/snippets/latex_02.txt", "r") as myfile:
+            self.string2 = myfile.read()
 
     def test_expand_to_word1(self):
         result = expand("\\section*{My Section}", 3, 3, "latex")
@@ -104,6 +106,26 @@ class LatexIntegrationTest(unittest.TestCase):
         result = expand(self.string1, 89, 297, "latex")
         self.assertEqual(result["start"], 73)
         self.assertEqual(result["end"], 311)
+
+    def test_expand_to_inline_math1(self):
+        result = expand(self.string2, 137, 137, "latex")
+        self.assertEqual(result["start"], 136)
+        self.assertEqual(result["end"], 139)
+
+    def test_expand_to_inline_math2(self):
+        result = expand(self.string2, 136, 139, "latex")
+        self.assertEqual(result["start"], 135)
+        self.assertEqual(result["end"], 139)
+
+    def test_expand_to_inline_math3(self):
+        result = expand(self.string2, 135, 139, "latex")
+        self.assertEqual(result["start"], 130)
+        self.assertEqual(result["end"], 145)
+
+    def test_expand_to_inline_math4(self):
+        result = expand(self.string2, 130, 145, "latex")
+        self.assertEqual(result["start"], 129)
+        self.assertEqual(result["end"], 146)
 
 if __name__ == "__main__":
     unittest.main()
