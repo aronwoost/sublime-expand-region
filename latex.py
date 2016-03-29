@@ -200,6 +200,47 @@ def expand_against_surrounding_command(string, start, end):
                                            "latex_command_surround")
 
 
+def expand_to_inline_math(string, start, end):
+    # don't expand if a dollar sign is inside the string
+    if re.search(r"(?:[^\\]|^)\$", string[start:end]):
+        return
+
+    line = utils.get_line(string, start, end)
+    escape = inside = False
+    open_pos = close_pos = None
+    # we only need to consider one position, because we have checked it does
+    # not contain any $-signs
+    pos = start - line["start"]
+    for i, char in enumerate(string[line["start"]:line["end"]]):
+        # break if we are behind
+        behind = pos < i
+        if not inside and behind:
+            return
+        if escape:
+            escape = False
+        elif char == "\\":
+            escape = True
+            continue
+        elif char == "$":
+            if not inside:
+                # the inner end of the $-sign
+                open_pos = i + 1
+            elif behind:
+                close_pos = i
+                break
+            inside = not inside
+
+    if open_pos is not None and close_pos is not None:
+        open_pos = line["start"] + open_pos
+        close_pos = line["start"] + close_pos
+        # expand to the outer end
+        if open_pos == start and close_pos == end:
+            open_pos -= 1
+            close_pos += 1
+        return utils.create_return_obj(
+            open_pos, close_pos, string, "latex_inline_math")
+
+
 # TODO could be moved to utils?
 def _closest_result(result1, result2):
     if result1 is None:
@@ -240,6 +281,13 @@ def expand(string, start, end):
     expand_stack.append("latex_command_surround")
 
     result = expand_against_surrounding_command(string, start, end)
+    if result:
+        result["expand_stack"] = expand_stack
+        return result
+
+    expand_stack.append("latex_inline_math")
+
+    result = expand_to_inline_math(string, start, end)
     if result:
         result["expand_stack"] = expand_stack
         return result
