@@ -1,11 +1,11 @@
 import re
 try:
-    import expand_to_word
+    import expand_to_regex_set
     import expand_to_symbols
     import utils
     _ST3 = False
 except:
-    from . import expand_to_word
+    from . import expand_to_regex_set
     from . import expand_to_symbols
     from . import utils
     _ST3 = True
@@ -29,6 +29,14 @@ def chart_at(string, index):
     """returns the chart at the position or the empty string,
     if the index is outside the string"""
     return string[index:index+1]
+
+
+def expand_to_tex_word(string, start, end):
+    """Expand to a valid latex word."""
+    regex = re.compile(r"[a-zA-Z@]", re.UNICODE)
+
+    return expand_to_regex_set._expand_to_regex_rule(
+        string, start, end, regex, "tex_word")
 
 
 def _get_closest_env_border(string, start_pos, end_pos, reverse=False):
@@ -191,7 +199,7 @@ def expand_against_surrounding_command(string, start, end):
         # span over the previous \command or \command*
         if chart_at(string, start - 1) == "*":
             start -= 1
-        result = expand_to_word.expand_to_word(string, start, start)
+        result = expand_to_tex_word(string, start, start)
         if result is None:
             return None
         start = result["start"] - 1
@@ -257,9 +265,9 @@ def _closest_result(result1, result2):
 def expand(string, start, end):
     expand_stack = []
 
-    expand_stack.append("word")
+    expand_stack.append("tex_word")
 
-    result = expand_to_word.expand_to_word(string, start, end)
+    result = expand_to_tex_word(string, start, end)
     if result:
         result["expand_stack"] = expand_stack
         return result
@@ -267,6 +275,16 @@ def expand(string, start, end):
     expand_stack.append("latex_command_base")
 
     result = expand_agains_base_command(string, start, end)
+    if result:
+        result["expand_stack"] = expand_stack
+        return result
+
+    expand_stack.append("tex_math_command")
+
+    # expand to math commands, e.g. \phi_x^2
+    regex = re.compile(r"[\w\\@^]", re.UNICODE)
+    result = expand_to_regex_set._expand_to_regex_rule(
+        string, start, end, regex, "tex_math_command")
     if result:
         result["expand_stack"] = expand_stack
         return result
