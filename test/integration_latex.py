@@ -127,5 +127,45 @@ class LatexIntegrationTest(unittest.TestCase):
         self.assertEqual(result["start"], 129)
         self.assertEqual(result["end"], 146)
 
+    def test_expand_to_tex_word1(self):
+        result = expand(self.string2, 165, 165, "latex")
+        self.assertEqual(result["start"], 165)
+        self.assertEqual(result["end"], 168)
+
+    def test_expand_to_tex_word2(self):
+        result = expand(self.string2, 165, 168, "latex")
+        self.assertEqual(result["start"], 164)
+        self.assertEqual(result["end"], 168)
+
+    def test_expand_to_tex_word3(self):
+        result = expand(self.string2, 164, 168, "latex")
+        self.assertEqual(result["start"], 164)
+        self.assertEqual(result["end"], 170)
+
+    def test_expand_to_tex_word4(self):
+        result = expand(self.string2, 173, 173, "latex")
+        self.assertEqual(result["start"], 173)
+        self.assertEqual(result["end"], 174)
+
+    def test_expand_to_tex_word5(self):
+        result = expand(self.string2, 173, 174, "latex")
+        self.assertEqual(result["start"], 173)
+        self.assertEqual(result["end"], 176)
+
+    def test_expand_to_inline_math5(self):
+        result = expand(self.string2, 173, 176, "latex")
+        self.assertEqual(result["start"], 164)
+        self.assertEqual(result["end"], 176)
+
+    def test_expand_to_inline_math6(self):
+        result = expand(self.string2, 164, 170, "latex")
+        self.assertEqual(result["start"], 164)
+        self.assertEqual(result["end"], 176)
+
+    def test_expand_to_inline_math7(self):
+        result = expand(self.string2, 164, 176, "latex")
+        self.assertEqual(result["start"], 163)
+        self.assertEqual(result["end"], 177)
+
 if __name__ == "__main__":
     unittest.main()
