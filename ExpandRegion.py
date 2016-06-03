@@ -89,8 +89,8 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
     for sel in new_regions:
       view.sel().add(sel)
 
-    # TODO take this from the settings
-    do_force_enable_soft_undo = True
+    settings = sublime.load_settings("ExpandRegion.sublime-settings")
+    do_force_enable_soft_undo = settings.get("force_soft_undo_integration")
     if do_force_enable_soft_undo:
       _force_enable_soft_undo(view, edit, new_regions)
 
