@@ -1,11 +1,11 @@
 import re
 try:
-    import expand_to_word
+    import expand_to_regex_set
     import expand_to_symbols
     import utils
     _ST3 = False
 except:
-    from . import expand_to_word
+    from . import expand_to_regex_set
     from . import expand_to_symbols
     from . import utils
     _ST3 = True
@@ -29,6 +29,14 @@ def chart_at(string, index):
     """returns the chart at the position or the empty string,
     if the index is outside the string"""
     return string[index:index+1]
+
+
+def expand_to_tex_word(string, start, end):
+    """Expand to a valid latex word."""
+    regex = re.compile(r"[a-zA-Z@]", re.UNICODE)
+
+    return expand_to_regex_set._expand_to_regex_rule(
+        string, start, end, regex, "tex_word")
 
 
 def _get_closest_env_border(string, start_pos, end_pos, reverse=False):
@@ -191,13 +199,54 @@ def expand_against_surrounding_command(string, start, end):
         # span over the previous \command or \command*
         if chart_at(string, start - 1) == "*":
             start -= 1
-        result = expand_to_word.expand_to_word(string, start, start)
+        result = expand_to_tex_word(string, start, start)
         if result is None:
             return None
         start = result["start"] - 1
         if chart_at(string, start) == "\\":
             return utils.create_return_obj(start, end, string,
                                            "latex_command_surround")
+
+
+def expand_to_inline_math(string, start, end):
+    # don't expand if a dollar sign is inside the string
+    if re.search(r"(?:[^\\]|^)\$", string[start:end]):
+        return
+
+    line = utils.get_line(string, start, end)
+    escape = inside = False
+    open_pos = close_pos = None
+    # we only need to consider one position, because we have checked it does
+    # not contain any $-signs
+    pos = start - line["start"]
+    for i, char in enumerate(string[line["start"]:line["end"]]):
+        # break if we are behind
+        behind = pos < i
+        if not inside and behind:
+            return
+        if escape:
+            escape = False
+        elif char == "\\":
+            escape = True
+            continue
+        elif char == "$":
+            if not inside:
+                # the inner end of the $-sign
+                open_pos = i + 1
+            elif behind:
+                close_pos = i
+                break
+            inside = not inside
+
+    if open_pos is not None and close_pos is not None:
+        open_pos = line["start"] + open_pos
+        close_pos = line["start"] + close_pos
+        # expand to the outer end
+        if open_pos == start and close_pos == end:
+            open_pos -= 1
+            close_pos += 1
+        return utils.create_return_obj(
+            open_pos, close_pos, string, "latex_inline_math")
 
 
 # TODO could be moved to utils?
@@ -216,9 +265,9 @@ def _closest_result(result1, result2):
 def expand(string, start, end):
     expand_stack = []
 
-    expand_stack.append("word")
+    expand_stack.append("tex_word")
 
-    result = expand_to_word.expand_to_word(string, start, end)
+    result = expand_to_tex_word(string, start, end)
     if result:
         result["expand_stack"] = expand_stack
         return result
@@ -226,6 +275,16 @@ def expand(string, start, end):
     expand_stack.append("latex_command_base")
 
     result = expand_agains_base_command(string, start, end)
+    if result:
+        result["expand_stack"] = expand_stack
+        return result
+
+    expand_stack.append("tex_math_command")
+
+    # expand to math commands, e.g. \phi_x^2
+    regex = re.compile(r"[\w\\@^]", re.UNICODE)
+    result = expand_to_regex_set._expand_to_regex_rule(
+        string, start, end, regex, "tex_math_command")
     if result:
         result["expand_stack"] = expand_stack
         return result
@@ -240,6 +299,13 @@ def expand(string, start, end):
     expand_stack.append("latex_command_surround")
 
     result = expand_against_surrounding_command(string, start, end)
+    if result:
+        result["expand_stack"] = expand_stack
+        return result
+
+    expand_stack.append("latex_inline_math")
+
+    result = expand_to_inline_math(string, start, end)
     if result:
         result["expand_stack"] = expand_stack
         return result

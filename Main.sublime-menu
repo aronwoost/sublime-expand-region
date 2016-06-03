@@ -1,0 +1,38 @@
+[
+	{
+		"caption": "Preferences",
+		"id": "preferences",
+		"mnemonic": "n",
+		"children":
+		[
+			{
+				"caption": "Package Settings",
+				"id": "package-settings",
+				"mnemonic": "P",
+				"children":
+				[
+					{
+						"caption": "ExpandRegion",
+						"children":
+						[
+							{
+								"caption": "Settings – Default",
+								"command": "open_file", "args":
+								{
+									"file": "${packages}/ExpandRegion/ExpandRegion.sublime-settings"
+								}
+							},
+							{
+								"caption": "Settings – User",
+								"command": "open_file", "args":
+								{
+									"file": "${packages}/User/ExpandRegion.sublime-settings"
+								}
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]

@@ -1,0 +1,13 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\begin{document}
+
+\section{My Section}
+
+In the function $f(x, \phi)  = 5$ we see....
+
+Let $\phi_x = a^2$ \dots{}
+
+\end{document}
