@@ -1,4 +1,8 @@
 {
+    // Whether ExpandRegion should force himself into the soft-undo list.
+    // Try to set this to false, if you encounter problems.
+    "force_soft_undo_integration": true,
+
     // The selectors for the different languages.
     // This specifies a list of scopes for every supported language.
     // If the intended language is not supported you may chose the language, which fits best,
