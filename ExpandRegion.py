@@ -96,33 +96,33 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
           print("startIndex: {0}, endIndex: {1}, type: {2}".format(result["start"], result["end"], result["type"]))
         result = sublime.Region(result["start"], result["end"])
 
-    # if we are on ST2 or have no BracketHighlighter regions only work
-    # with the result
-    if not _ST3 or not bh_regions:
-      if result:
-        new_regions.append(result)
-      else:
-        # if there is no result, keep the current region
-        new_regions.append(region)
-    else:
-      try:
-        inner, outer = next(
-          r for r in bh_regions
-          if r[1].contains(region) and
-          (region == r[0] or not region.contains(r[0]))
-        )
-        if inner == region:
-          new_regions.append(outer)
-        elif not result or (
-            inner.begin() > result.begin() or inner.end() < result.end()):
-          new_regions.append(inner)
-        else:
+      # if we are on ST2 or have no BracketHighlighter regions only work
+      # with the result
+      if not _ST3 or not bh_regions:
+        if result:
           new_regions.append(result)
-      except StopIteration:
-        if not result:
+        else:
           # if there is no result, keep the current region
-          result = region
-        new_regions.append(result)
+          new_regions.append(region)
+      else:
+        try:
+          inner, outer = next(
+            r for r in bh_regions
+            if r[1].contains(region) and
+            (region == r[0] or not region.contains(r[0]))
+          )
+          if inner == region:
+            new_regions.append(outer)
+          elif not result or (
+              inner.begin() > result.begin() or inner.end() < result.end()):
+            new_regions.append(inner)
+          else:
+            new_regions.append(result)
+        except StopIteration:
+          if not result:
+            # if there is no result, keep the current region
+            result = region
+          new_regions.append(result)
 
     # replace the selections with the new regions
     view.sel().clear()
