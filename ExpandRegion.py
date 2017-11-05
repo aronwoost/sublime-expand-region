@@ -2,8 +2,10 @@ import sublime, sublime_plugin, os
 
 try:
   import expand_region_handler
+  import utils
 except:
   from . import expand_region_handler
+  from . import utils
 
 # get the used sublime text version
 _ST3 = sublime.version() >= '3000'
@@ -52,6 +54,7 @@ def _detect_language(view, settings_name):
 class ExpandRegionCommand(sublime_plugin.TextCommand):
   def run(self, edit, language="", undo=False, debug=True):
     view = self.view
+    utils.is_debug_enabled = debug
 
     if (undo):
       string = view.substr(sublime.Region(0, view.size()))
@@ -67,7 +70,7 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
       language = (_detect_language(view, "ExpandRegion") or
                   _detect_language(view, "ExpandRegionFallback"))
     if debug:
-      print("Determined language: '{0}'".format(language))
+      print("ExpandRegion, ExpandRegion.py, Determined language: '{0}'".format(language))
 
     new_regions = []
     for region in self.view.sel():
@@ -79,7 +82,7 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
       if result:
         new_regions.append(sublime.Region(result["start"], result["end"]))
         if debug:
-          print("startIndex: {0}, endIndex: {1}, type: {2}".format(result["start"], result["end"], result["type"]))
+          print("ExpandRegion, ExpandRegion.py, startIndex: {0}, endIndex: {1}, type: {2}".format(result["start"], result["end"], result["type"]))
       else:
         # if there is no result, keep the current region
         new_regions.append(region)

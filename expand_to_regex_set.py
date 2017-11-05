@@ -1,4 +1,7 @@
 try:
+  # Block it from trying to import something which should not be on the python sys.path
+  # https://github.com/hktonylee/SublimeNumberKing/issues/4
+  import expand_region_handler
   import utils
 except:
   from . import utils
@@ -20,7 +23,7 @@ def _expand_to_regex_rule(string, startIndex, endIndex, regex, type):
       newStartIndex = searchIndex + 1
       break
     char = string[searchIndex:searchIndex+1]
-    # character found, that does not fit into the search set 
+    # character found, that does not fit into the search set
     if regex.match(char) is None:
       newStartIndex = searchIndex + 1
       break
@@ -35,7 +38,7 @@ def _expand_to_regex_rule(string, startIndex, endIndex, regex, type):
       newEndIndex = searchIndex
       break
     char = string[searchIndex:searchIndex+1]
-    # character found, that does not fit into the search set 
+    # character found, that does not fit into the search set
     if regex.match(char) is None:
       newEndIndex = searchIndex
       break

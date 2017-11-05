@@ -90,7 +90,7 @@ def expand_against_matching_env(string, start, end):
     if not env_border:
         return None
     if not env_border["name"] == m.group("name"):
-        print("Environments not matching '{}' and '{}'"
+        print("ExpandRegion, latex.py, Environments not matching '{}' and '{}'"
               .format(env_border["name"], m.group("name")))
         return None
     if not reverse:  # search from begin
@@ -110,7 +110,7 @@ def expand_against_env(string, start, end):
     if tex_begin is None or tex_end is None:
         return None
     if tex_begin["name"] != tex_end["name"]:
-        print("Environments not matching '{}' and '{}'"
+        print("ExpandRegion, latex.py, Environments not matching '{}' and '{}'"
               .format(tex_begin["name"], tex_end["name"]))
         return None
     inner_env_selected = start == tex_begin["end"] and end == tex_end["start"]

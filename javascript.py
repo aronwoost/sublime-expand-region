@@ -54,7 +54,8 @@ def expand(string, start, end):
     result["expand_stack"] = expand_stack
     return result
 
-  print(None)
+  if utils.is_debug_enabled:
+    print("ExpandRegion, javascript.py, None")
 
 def expand_agains_line(string, start, end):
   expand_stack = []

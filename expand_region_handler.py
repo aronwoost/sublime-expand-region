@@ -5,11 +5,14 @@ try:
   import html
   import latex
   import python
+  import utils
 except:
   from . import javascript
   from . import html
   from . import latex
   from . import python
+  from . import utils
+
 
 def expand(string, start, end, language="", settings=None):
 
@@ -25,7 +28,8 @@ def expand(string, start, end, language="", settings=None):
   if (result != None and settings):
     expand_region_settings = settings.get("expand_region_settings")
     newSettingsJson = add_to_stack(expand_region_settings, string.encode('utf-8'), result.get("start"), result.get("end"), start, end)
-    print(newSettingsJson)
+    if utils.is_debug_enabled:
+      print("ExpandRegion, expand_region_handler.py, " + newSettingsJson)
     settings.set("expand_region_settings", newSettingsJson)
 
   return result;
@@ -35,7 +39,8 @@ def undo(string, start, end, settings=None):
   if (settings):
     expand_region_settings = settings.get("expand_region_settings")
     result = get_last_selection(expand_region_settings, string.encode('utf-8'), start, end)
-    print(result.get("newSettingsJson"))
+    if utils.is_debug_enabled:
+      print("ExpandRegion, expand_region_handler.py, " + result.get("newSettingsJson"))
     settings.set("expand_region_settings", result.get("newSettingsJson"))
     if (result.get("newSelection") == None):
       return None
