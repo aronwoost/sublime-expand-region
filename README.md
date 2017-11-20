@@ -8,6 +8,17 @@ ExpandRegion works a bit like the build in "Expand Selection to Scope", however 
 
 It works similar to ExpandRegion for Emacs and "Structural Selection" (Control-W) in the JetBrains IDE's (i.e. IntelliJ IDEA).
 
+## Prereleases
+
+Pre-releases help us to test new features and improve the stability of releases. You can benefit the newest features and help us testing them. Just open *Preferences > Package Settings > Package Control > Settings - User* and insert at a reasonable (correct JSON syntax) position: 
+
+``` js
+    "install_prereleases": ["ExpandRegion"],
+```
+
+If you also use pre-releases of other packages just add them comma separated into the list.
+
+
 ## Example
 
 ### JavaScript (should also work for other c'ish languages like Java).
