@@ -1,5 +1,7 @@
 import re
 
+is_debug_enabled = False
+
 def selection_contain_linebreaks(string, startIndex, endIndex):
   linebreakRe = re.compile("(\n)")
   part = string[startIndex:endIndex]

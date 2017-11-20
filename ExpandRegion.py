@@ -2,8 +2,10 @@ import sublime, sublime_plugin, os
 
 try:
   import expand_region_handler
+  import utils
 except:
   from . import expand_region_handler
+  from . import utils
 
 # get the used sublime text version
 _ST3 = sublime.version() >= '3000'
@@ -52,6 +54,7 @@ def _detect_language(view, settings_name):
 class ExpandRegionCommand(sublime_plugin.TextCommand):
   def run(self, edit, language="", undo=False, debug=False):
     view = self.view
+    utils.is_debug_enabled = debug
 
     if (undo):
       string = view.substr(sublime.Region(0, view.size()))
@@ -67,7 +70,7 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
       language = (_detect_language(view, "ExpandRegion") or
                   _detect_language(view, "ExpandRegionFallback"))
     if debug:
-      print("Determined language: '{0}'".format(language))
+      print("ExpandRegion, ExpandRegion.py, Determined language: '{0}'".format(language))
 
 
     # extract the locations from BracketHighlighter
@@ -85,6 +88,7 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
         bh_regions.append((inner, outer))
 
     new_regions = []
+    is_region_expanded = True
     for region in self.view.sel():
       string = self.view.substr(sublime.Region(0, self.view.size()))
       start = region.begin()
@@ -93,7 +97,7 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
       result = expand_region_handler.expand(string, start, end, language, self.view.settings())
       if result:
         if debug:
-          print("startIndex: {0}, endIndex: {1}, type: {2}".format(result["start"], result["end"], result["type"]))
+          print("ExpandRegion, ExpandRegion.py, startIndex: {0}, endIndex: {1}, type: {2}".format(result["start"], result["end"], result["type"]))
         result = sublime.Region(result["start"], result["end"])
 
       # if we are on ST2 or have no BracketHighlighter regions only work
@@ -104,6 +108,7 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
         else:
           # if there is no result, keep the current region
           new_regions.append(region)
+          is_region_expanded = False
       else:
         try:
           inner, outer = next(
@@ -122,17 +127,23 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
           if not result:
             # if there is no result, keep the current region
             result = region
+            is_region_expanded = False
           new_regions.append(result)
 
-    # replace the selections with the new regions
-    view.sel().clear()
-    for sel in new_regions:
-      view.sel().add(sel)
+    if is_region_expanded:
+      # replace the selections with the new regions
+      view.sel().clear()
+      for sel in new_regions:
+        view.sel().add(sel)
 
-    settings = sublime.load_settings("ExpandRegion.sublime-settings")
-    do_force_enable_soft_undo = settings.get("force_soft_undo_integration")
-    if do_force_enable_soft_undo:
-      _force_enable_soft_undo(view, edit, new_regions)
+      settings = sublime.load_settings("ExpandRegion.sublime-settings")
+      do_force_enable_soft_undo = settings.get("force_soft_undo_integration")
+      if do_force_enable_soft_undo:
+        _force_enable_soft_undo(view, edit, new_regions)
+    else:
+      if debug:
+        print( "ExpandRegion, ExpandRegion.py, calling Sublime Text expand_selection to scope..." )
+      view.run_command( "expand_selection", {"to": "scope"} )
 
 
 class ExpandRegionContext(sublime_plugin.EventListener):
