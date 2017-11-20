@@ -52,7 +52,7 @@ def _detect_language(view, settings_name):
 
 
 class ExpandRegionCommand(sublime_plugin.TextCommand):
-  def run(self, edit, language="", undo=False, debug=True):
+  def run(self, edit, language="", undo=False, debug=False):
     view = self.view
     utils.is_debug_enabled = debug
 
@@ -72,6 +72,21 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
     if debug:
       print("ExpandRegion, ExpandRegion.py, Determined language: '{0}'".format(language))
 
+
+    # extract the locations from BracketHighlighter
+    locations = view.settings().get("bracket_highlighter.locations", {})
+    bh_regions = []
+    if _ST3:
+      for k, v in locations.get("open", {}).items():
+        r_open = sublime.Region(*v)
+        loc_close = locations.get("close", {})
+        if k not in loc_close:
+          continue
+        close = loc_close[k]
+        inner = sublime.Region(v[1], close[0])
+        outer = sublime.Region(v[0], close[1])
+        bh_regions.append((inner, outer))
+
     new_regions = []
     is_region_expanded = True
     for region in self.view.sel():
@@ -81,12 +96,39 @@ class ExpandRegionCommand(sublime_plugin.TextCommand):
 
       result = expand_region_handler.expand(string, start, end, language, self.view.settings())
       if result:
-        new_regions.append(sublime.Region(result["start"], result["end"]))
         if debug:
           print("ExpandRegion, ExpandRegion.py, startIndex: {0}, endIndex: {1}, type: {2}".format(result["start"], result["end"], result["type"]))
+        result = sublime.Region(result["start"], result["end"])
+
+      # if we are on ST2 or have no BracketHighlighter regions only work
+      # with the result
+      if not _ST3 or not bh_regions:
+        if result:
+          new_regions.append(result)
+        else:
+          # if there is no result, keep the current region
+          new_regions.append(region)
+          is_region_expanded = False
       else:
-        # if there is no result, call the built-in sublime text expand_selection to scope command
-        is_region_expanded = False
+        try:
+          inner, outer = next(
+            r for r in bh_regions
+            if r[1].contains(region) and
+            (region == r[0] or not region.contains(r[0]))
+          )
+          if inner == region:
+            new_regions.append(outer)
+          elif not result or (
+              inner.begin() > result.begin() or inner.end() < result.end()):
+            new_regions.append(inner)
+          else:
+            new_regions.append(result)
+        except StopIteration:
+          if not result:
+            # if there is no result, keep the current region
+            result = region
+            is_region_expanded = False
+          new_regions.append(result)
 
     if is_region_expanded:
       # replace the selections with the new regions
